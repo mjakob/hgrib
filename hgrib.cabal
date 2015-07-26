@@ -2,21 +2,25 @@
 
 name:                hgrib
 version:             0.1.0.0
-synopsis:            Unofficial bindings for grib_api
+synopsis:            Unofficial bindings for GRIB API
 description:
-  Unofficial bindings to ECMWF's grib_api library for reading WMO
-  FM-92 GRIB edition 1 and edition 2 messages.  No write support is
-  currently implemented.
-homepage:            https://github.com/mjakob/hgrib.git
+    Unofficial bindings to ECMWF's GRIB API library for reading WMO
+    FM-92 GRIB edition 1 and edition 2 messages.
+homepage:            https://github.com/mjakob/hgrib
 license:             GPL-3
 license-file:        LICENSE
 author:              Mattias Jakobsson
 maintainer:          mjakob422@gmail.com
-copyright:           © 2015 Mattias Jakobsson
+copyright:           (c) 2015 Mattias Jakobsson
 category:            Data
+stability:           unstable
+bug-reports:         https://github.com/mjakob/hgrib/issues
 build-type:          Simple
-extra-source-files:  README.md
 cabal-version:       >=1.10
+extra-source-files:
+    README.md
+    test/stage/regular_latlon_surface.grib1
+    test/stage/regular_latlon_surface.grib2
 
 source-repository head
   type:      git
@@ -24,9 +28,50 @@ source-repository head
   branch:    develop
 
 library
-  exposed-modules:     Data.Grib
-  other-modules:       Data.Grib.Internal
-  -- other-extensions:    
-  build-depends:       base >=4.8 && <4.9
-  default-language:    Haskell2010
-  extra-libraries:     grib_api
+  default-language: Haskell2010
+  hs-source-dirs:   src
+  exposed-modules:
+      Data.Grib.Raw
+      Data.Grib.Raw.CFile
+      Data.Grib.Raw.Context
+      Data.Grib.Raw.Exception
+      Data.Grib.Raw.Handle
+      Data.Grib.Raw.Index
+      Data.Grib.Raw.Iterator
+      Data.Grib.Raw.KeysIterator
+      Data.Grib.Raw.Nearest
+      Data.Grib.Raw.Types
+      Data.Grib.Raw.Value
+  other-modules:
+      Data.Grib.Raw.Marshal
+  build-depends:
+      base == 4.8.*
+  build-tools:
+      c2hs ==0.25.*
+  extra-libraries:
+      grib_api
+  ghc-options:
+      -Wall
+
+test-suite tests
+  type:             exitcode-stdio-1.0
+  default-language: Haskell2010
+  main-is:          Spec.hs
+  hs-source-dirs:   test
+  other-modules:
+      Data.Grib.Raw.CFileSpec
+      Data.Grib.Raw.ContextSpec
+      Data.Grib.Raw.HandleSpec
+      Data.Grib.Raw.IndexSpec
+      Data.Grib.Raw.IteratorSpec
+      Data.Grib.Raw.KeysIteratorSpec
+      Data.Grib.Raw.NearestSpec
+      Data.Grib.Raw.Test
+      Data.Grib.Raw.ValueSpec
+  build-depends:
+      base      == 4.8.*
+    , directory == 1.2.*
+    , hgrib
+    , hspec     == 2.1.*
+  ghc-options:
+      -Wall
