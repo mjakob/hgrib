@@ -75,3 +75,19 @@ test-suite tests
     , hspec     == 2.1.*
   ghc-options:
       -Wall
+
+flag build_examples
+  description: Build GRIB API example programs
+  default:     False
+
+executable get
+  default-language: Haskell2010
+  main-is:          get.hs
+  hs-source-dirs:   examples
+  build-depends:
+      base == 4.8.*
+    , hgrib
+  ghc-options:
+      -Wall
+  if !flag(build_examples)
+    buildable:      False
