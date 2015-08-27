@@ -45,7 +45,6 @@ module Data.Grib.Raw.Handle
        , gribCountInFile
        ) where
 
-import Control.Monad     ((>=>))
 import Foreign
 import Foreign.C
 

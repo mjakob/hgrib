@@ -84,6 +84,8 @@ defaultGribContext = GribContext nullPtr
 -- context that is used to free memory.
 {#pointer grib_free_proc as GribFreeProc #}
 
+-- This comment is inserted to help Haddock keep all docs.
+
 -- typedef void* (*grib_malloc_proc)(const grib_context* c, size_t length);
 --
 -- |Grib malloc procedure, format of a procedure referenced in the

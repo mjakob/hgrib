@@ -47,7 +47,7 @@ library
   build-depends:
       base == 4.8.*
   build-tools:
-      c2hs ==0.25.*
+      c2hs == 0.26.*
   extra-libraries:
       grib_api
   ghc-options:

@@ -91,6 +91,8 @@ import Data.Typeable
     , GRIB_INVALID_KEY_VALUE        as GribInvalidKeyValue
     } deriving (Eq, Show) #}
 
+-- This comment is inserted to help Haddock keep all docs.
+
 -- |An exception carrying an 'ErrorCode' or representing a returned
 -- null pointer.
 data GribException = GribException ErrorCode

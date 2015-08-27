@@ -21,7 +21,7 @@ The following prerequisites are needed to build HGrib:
     cabal's `--extra-include-dirs` and `--extra-lib-dirs` if it's
     installed at a custom location); and
 
-  * [c2hs][] == 0.25.*
+  * [c2hs][] == 0.26.*
 
 With these requirements available, HGrib can be installed from
 [Hackage][] with [Cabal][]:

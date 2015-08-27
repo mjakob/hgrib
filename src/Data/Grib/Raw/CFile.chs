@@ -20,7 +20,6 @@ module Data.Grib.Raw.CFile
 
 import Control.Exception (bracket)
 import Control.Monad     (when)
-import Foreign
 import Foreign.C
 import System.IO         (IOMode(..))
 
@@ -29,6 +28,8 @@ import System.IO         (IOMode(..))
 
 -- |A pointer to a C stream (FILE).
 {#pointer *FILE as CFilePtr -> CFile #}
+
+-- This comment is inserted to help Haddock keep all docs.
 
 -- |A constant indicating end of file.
 eof :: CInt

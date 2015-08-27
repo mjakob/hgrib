@@ -40,7 +40,6 @@ module Data.Grib.Raw.Index
        , gribHandleNewFromIndex
        ) where
 
-import Control.Monad ((>=>))
 import Foreign
 import Foreign.C
 
