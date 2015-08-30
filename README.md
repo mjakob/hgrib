@@ -97,21 +97,24 @@ Issues and pull requests are most welcome!
 
 ## Licenses
 
-HGrib is released under the [GNU General Public License v3.0][GPL3].
-ECMWF's GRIB API is released under the [Apache license][].  **HGrib is
-in no way associated with ECMWF or the original library.**
+HGrib was created and is currently maintained by
+[Mattias Jakobsson][].  It is released under the
+[GNU General Public License v3.0][GPL3].  ECMWF's GRIB API is released
+under the [Apache license][].  **HGrib is in no way associated with
+ECMWF or the original library.**
 
 
-[Apache license]: https://software.ecmwf.int/wiki/display/GRIB/License
-[c2hs]:           https://github.com/haskell/c2hs
-[Cabal]:          https://www.haskell.org/cabal/
-[ECMWF]:          http://www.ecmwf.int/
-[GPL3]:           http://www.gnu.org/licenses/gpl-3.0.html
-[GRIB API]:       https://software.ecmwf.int/wiki/display/GRIB/Home
-[GRIB Docs]:      https://software.ecmwf.int/wiki/display/GRIB/Module+Index
-[GRIB Get]:       https://software.ecmwf.int/wiki/display/GRIB/get.c
-[GRIB Header]:    https://software.ecmwf.int/wiki/display/GRIB/grib_api.h+File+Reference
-[Hackage]:        http://hackage.haskell.org/
-[Haddock]:        https://www.haskell.org/haddock/
-[HGRIB Docs]:     https://hackage.haskell.org/package/hgrib
-[WMO FM-92 GRIB]: http://www.wmo.int/pages/prog/www/WMOCodes/Guides/GRIB/Introduction_GRIB1-GRIB2.pdf
+[Apache license]:    https://software.ecmwf.int/wiki/display/GRIB/License
+[c2hs]:              https://github.com/haskell/c2hs
+[Cabal]:             https://www.haskell.org/cabal/
+[ECMWF]:             http://www.ecmwf.int/
+[GPL3]:              http://www.gnu.org/licenses/gpl-3.0.html
+[GRIB API]:          https://software.ecmwf.int/wiki/display/GRIB/Home
+[GRIB Docs]:         https://software.ecmwf.int/wiki/display/GRIB/Module+Index
+[GRIB Get]:          https://software.ecmwf.int/wiki/display/GRIB/get.c
+[GRIB Header]:       https://software.ecmwf.int/wiki/display/GRIB/grib_api.h+File+Reference
+[Hackage]:           http://hackage.haskell.org/
+[Haddock]:           https://www.haskell.org/haddock/
+[HGRIB Docs]:        https://hackage.haskell.org/package/hgrib
+[Mattias Jakobsson]: https://github.com/mjakob
+[WMO FM-92 GRIB]:    http://www.wmo.int/pages/prog/www/WMOCodes/Guides/GRIB/Introduction_GRIB1-GRIB2.pdf
