@@ -80,21 +80,19 @@ spec = do
       gribHandleNewFromMessageCopy ctx nullPtr 0
         `shouldThrow` isNullPtrReturned
 
-  describe "gribHandleNewFromMultiMessage" $ do
-    context "in multi mode" $ after_ (gribMultiSupportOff ctx) $
-      it "should return a message of zero length if given a single message" $ do
-        gribMultiSupportOn ctx
-        withRegular1 $ \h -> do
+  describe "gribHandleNewFromMultiMessage" $
+    let checkMultiMessageLength = withRegular1 $ \h -> do
           (msg, len) <- gribGetMessage h
           (_, _, len') <- gribHandleNewFromMultiMessage ctx msg len
           len' `shouldBe` 0
+    in do
+      context "in multi mode" $ after_ (gribMultiSupportOff ctx) $
+        it "should return a message of zero length if given a single message" $
+           gribMultiSupportOn ctx >> checkMultiMessageLength
 
-    context "not in multi mode" $
-      it "should return a message of zero length if given a single message" $
-        withRegular1 $ \h -> do
-          (msg, len) <- gribGetMessage h
-          (_, _, len') <- gribHandleNewFromMultiMessage ctx msg len
-          len' `shouldBe` 0
+      context "not in multi mode" $
+        it "should return a message of zero length if given a single message"
+           checkMultiMessageLength
 
   describe "gribMultiHandleAppend" $
     it "should succeed if the handle is valid" $
