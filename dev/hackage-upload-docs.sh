@@ -6,12 +6,12 @@
 
 # custom options for "cabal haddock" (cabal haddock --help,
 #   http://www.haskell.org/haddock/doc/html/invoking.html)
-CUSTOM_OPTIONS=(--haddock-options='-q aliased')
+CUSTOM_OPTIONS=()
 # hackage server to upload to (and to search uploaded versions for)
 HACKAGESERVER=hackage.haskell.org
 # whether to use cabal install (1) or copy docs directly from cabal haddock (0)
 #  some user had troubles installing their package (or dependencies)
-CABAL_INSTALL=1
+CABAL_INSTALL=0
 # put your credentials into ~/.netrc: (see man netrc)
 #   machine $HACKAGESERVER
 #   login $USERNAME
@@ -37,7 +37,7 @@ status_code() {
 }
 
 self=$(readlink -f "$0")
-base=$(dirname "${self}")
+base=$(dirname "${self}")/..
 cd "${base}"
 tmpdir=$(mktemp --tmpdir -d doc-package-XXXXXXX)
 trap 'rm -rf "${tmpdir}"' EXIT
