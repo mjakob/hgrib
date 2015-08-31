@@ -27,9 +27,14 @@ source-repository head
   location:  https://github.com/mjakob/hgrib.git
   branch:    develop
 
+source-repository this
+  type:      git
+  location:  https://github.com/mjakob/hgrib.git
+  tag:       0.1.0.0
+
 library
-  default-language: Haskell2010
-  hs-source-dirs:   src
+  default-language:  Haskell2010
+  hs-source-dirs:    src
   exposed-modules:
       Data.Grib.Raw
       Data.Grib.Raw.CFile
@@ -54,10 +59,10 @@ library
       -Wall
 
 test-suite tests
-  type:             exitcode-stdio-1.0
-  default-language: Haskell2010
-  main-is:          Spec.hs
-  hs-source-dirs:   test
+  type:              exitcode-stdio-1.0
+  default-language:  Haskell2010
+  main-is:           Spec.hs
+  hs-source-dirs:    test
   other-modules:
       Data.Grib.Raw.CFileSpec
       Data.Grib.Raw.ContextSpec
@@ -77,17 +82,18 @@ test-suite tests
       -Wall
 
 flag build_examples
-  description: Build GRIB API example programs
-  default:     False
+  description:  Build GRIB API example programs
+  default:      False
+  manual:       True
 
 executable get
-  default-language: Haskell2010
-  main-is:          get.hs
-  hs-source-dirs:   examples
+  default-language:  Haskell2010
+  main-is:           get.hs
+  hs-source-dirs:    examples
   build-depends:
       base == 4.8.*
     , hgrib
   ghc-options:
       -Wall
   if !flag(build_examples)
-    buildable:      False
+    buildable:       False
