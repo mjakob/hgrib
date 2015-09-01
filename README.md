@@ -21,6 +21,8 @@ The following prerequisites are needed to build HGrib:
     cabal's `--extra-include-dirs` and `--extra-lib-dirs` if it's
     installed at a custom location); and
 
+  * Haskell [base][] == 4.8.*
+
   * [c2hs][] == 0.26.*
 
 With these requirements available, HGrib can be installed from
@@ -105,6 +107,7 @@ ECMWF or the original library.**
 
 
 [Apache license]:    https://software.ecmwf.int/wiki/display/GRIB/License
+[base]:              http://hackage.haskell.org/package/base
 [c2hs]:              https://github.com/haskell/c2hs
 [Cabal]:             https://www.haskell.org/cabal/
 [ECMWF]:             http://www.ecmwf.int/
