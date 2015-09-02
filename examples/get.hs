@@ -15,7 +15,7 @@ main = do
   h <- withBinaryCFile filename ReadMode $
          gribHandleNewFromFile defaultGribContext
 
-  _ <- gribSetString h "file" filename
+  gribSetString h "file" filename
 
   gribGetLong h "Ni" >>= printf "numberOfPointsAlongAParallel=%d\n"
   gribGetLong h "Nj" >>= printf "numberOfPointsAlongAMeridian=%d\n"

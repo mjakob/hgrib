@@ -90,6 +90,6 @@ executable get
       base >= 4.5 && < 4.9
     , hgrib
   ghc-options:
-      -Wall
+      -Wall -fno-warn-unused-do-bind
   if !flag(build_examples)
     buildable:       False
