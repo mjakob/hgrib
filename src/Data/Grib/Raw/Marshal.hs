@@ -86,7 +86,7 @@ withRealArrayLen xs f =
 checkForeignPtr :: (ForeignPtr a -> a) -> FinalizerPtr a -> Ptr a -> IO a
 checkForeignPtr makeA finalizer p
   | p == nullPtr = throw NullPtrReturned
-  | otherwise    = makeA <$> newForeignPtr finalizer p
+  | otherwise    = fmap makeA $ newForeignPtr finalizer p
 
 getArray :: (Storable a, Integral b, Storable b)
          => (CString -> Ptr a -> Ptr b -> IO CInt)
@@ -94,4 +94,4 @@ getArray :: (Storable a, Integral b, Storable b)
 getArray cCall key xs n =
   withCString key $ \key' -> with (fromIntegral n) $ \n' -> do
     cCall key' xs n' >>= checkStatus
-    fromIntegral <$> peek n' >>= flip peekArray xs
+    fmap fromIntegral (peek n') >>= flip peekArray xs
