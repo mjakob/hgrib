@@ -1,0 +1,21 @@
+language: haskell
+ghc:
+  - 7.8
+  - 7.6
+  - 7.4
+env:
+  - GRIB_API_VERSION=1.14.0-1
+  - GRIB_API_VERSION=1.13.1-1
+  - GRIB_API_VERSION=1.12.3-1
+sudo: required
+before_install: ./dev/travis/before_install.sh
+install:
+  - cabal install happy alex
+  - cabal install 'c2hs == 0.26.*'
+  - cabal install --only-dependencies --enable-tests -fbuild_examples
+script:
+  - cabal configure --enable-tests -fbuild_examples && cabal build && cabal test
+branches:
+  only:
+    - master
+    - develop
