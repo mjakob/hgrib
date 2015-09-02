@@ -48,7 +48,9 @@ checkStatusPtr :: Ptr CInt -> IO ()
 checkStatusPtr = peek >=> checkStatus
 
 fromFlagList :: (Enum a, Integral b) => [a] -> b
-fromFlagList = fromIntegral . foldr ((.|.) . fromEnum) zeroBits
+fromFlagList = fromIntegral . foldr ((.|.) . fromEnum) zeroBits'
+  -- Data.Bits.zeroBits is only available since base 4.7.0.0.
+  where zeroBits' = clearBit (bit 0) 0
 
 maybeWithCString :: Maybe String -> (CString -> IO a) -> IO a
 maybeWithCString (Just s) f = withCString s f
