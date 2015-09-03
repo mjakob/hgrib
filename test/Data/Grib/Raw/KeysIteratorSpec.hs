@@ -28,17 +28,18 @@ spec =
         gribKeysIteratorNext kiter `shouldReturn` True
         gribKeysIteratorGetName kiter `shouldReturn` "parametersVersion"
 
-    it "should return UseEcmfConventions in the 2nd step with no filters" $
-      withRegular1 $ \h -> withGribKeysIterator h [] Nothing $ \kiter -> do
-        gribKeysIteratorNext kiter `shouldReturn` True
-        gribKeysIteratorNext kiter `shouldReturn` True
-        gribKeysIteratorGetName kiter `shouldReturn` "UseEcmfConventions"
-
     it "should return totalLength in the 1st step with SkipComputed" $
       let flags = [GribKeysIteratorSkipComputed] in
       withRegular1 $ \h -> withGribKeysIterator h flags Nothing $ \kiter -> do
         gribKeysIteratorNext kiter `shouldReturn` True
         gribKeysIteratorGetName kiter `shouldReturn` "totalLength"
+
+    it "should return UseEcmfConventions in the 2nd step with SkipComputed" $
+      let flags = [GribKeysIteratorSkipComputed] in
+      withRegular1 $ \h -> withGribKeysIterator h flags Nothing $ \kiter -> do
+        gribKeysIteratorNext kiter `shouldReturn` True
+        gribKeysIteratorNext kiter `shouldReturn` True
+        gribKeysIteratorGetName kiter `shouldReturn` "editionNumber"
 
     it "should return totalLength when SkipComputed is set after creation" $
       let flags = [GribKeysIteratorSkipComputed] in
