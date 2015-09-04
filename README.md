@@ -17,13 +17,13 @@ versions are intended to include, in chronological order,
 
 The following prerequisites are needed to build HGrib:
 
-  * [GRIB API][] == 1.14.0 installed and discoverable by ghc (use
+  * [GRIB API][] >= 1.12 installed and discoverable by ghc (use
     cabal's `--extra-include-dirs` and `--extra-lib-dirs` if it's
     installed at a custom location); and
 
-  * Haskell [base][] == 4.8.*
+  * Haskell [base][] >= 4.5; and
 
-  * [c2hs][] == 0.26.*
+  * [c2hs][] == 0.26.*.
 
 With these requirements available, HGrib can be installed from
 [Hackage][] with [Cabal][]:
