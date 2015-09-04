@@ -149,13 +149,12 @@ gribNearestFindMultiple h lsm ilats ilons =
   allocaArray n $ \vals ->
   allocaArray n $ \dists ->
   allocaArray n $ \is -> do
-    status <- cCall h' lsm' ilats' ilons' n' olats olons vals dists is
-    checkStatus status
-    olats' <- map realToFrac <$> peekArray n olats
-    olons' <- map realToFrac <$> peekArray n olons
-    vals' <- map realToFrac <$> peekArray n vals
-    dists' <- map realToFrac <$> peekArray n dists
-    is' <- map fromIntegral <$> peekArray n is
+    cCall h' lsm' ilats' ilons' n' olats olons vals dists is >>= checkStatus
+    olats' <- fmap (map realToFrac)   (peekArray n olats)
+    olons' <- fmap (map realToFrac)   (peekArray n olons)
+    vals'  <- fmap (map realToFrac)   (peekArray n vals)
+    dists' <- fmap (map realToFrac)   (peekArray n dists)
+    is'    <- fmap (map fromIntegral) (peekArray n is)
     return (olats', olons', vals', dists', is')
   where cCall = {#call grib_nearest_find_multiple as gribNearestFindMultiple'_ #}
 

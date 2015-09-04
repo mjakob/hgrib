@@ -12,10 +12,8 @@ Unit and regression tests for Data.Grib.Raw.Index.
 
 module Data.Grib.Raw.IndexSpec (main, spec) where
 
-import Control.Exception (tryJust)
-import Control.Monad     (guard)
-import Data.Either       (isRight)
-import Foreign           (alloca)
+import Control.Monad (void)
+import Foreign       (alloca)
 
 import Test.Hspec
 import Data.Grib.Raw
@@ -64,26 +62,23 @@ spec = do
       it "should succeed after gribIndexSelectLong \"Ni\" 16" $
         withRegular1 ["Ni"] $ \idx -> do
           gribIndexSelectLong idx "Ni" 16 `shouldReturn` ()
-          tryJust (guard . isGribEndOfIndex) (gribHandleNewFromIndex idx) >>=
-            (`shouldSatisfy` isRight)
+          void $ gribHandleNewFromIndex idx
 
       it "should succeed after gribIndexSelectDouble \"yFirst\" 60" $
         withRegular1 ["yFirst"] $ \idx -> do
           gribIndexSelectDouble idx "yFirst" 60 `shouldReturn` ()
-          tryJust (guard . isGribEndOfIndex) (gribHandleNewFromIndex idx) >>=
-            (`shouldSatisfy` isRight)
+          void $ gribHandleNewFromIndex idx
 
       it "should succeed after gribIndexSelectString \"packingtype\" \
          \\"grid_simple\"" $
         withRegular1 ["packingType"] $ \idx -> do
           gribIndexSelectString idx "packingType" "grid_simple" `shouldReturn` ()
-          tryJust (guard . isGribEndOfIndex) (gribHandleNewFromIndex idx) >>=
-            (`shouldSatisfy` isRight)
+          void $ gribHandleNewFromIndex idx
 
       it "should fail with GribEndOfIndex after selecting nothing" $
         withRegular1 ["Ni"] $ \idx -> do
           gribIndexSelectLong idx "Ni" 0 `shouldReturn` ()
-          gribHandleNewFromIndex idx `shouldThrow` isGribEndOfIndex
+          void $ gribHandleNewFromIndex idx `shouldThrow` isGribEndOfIndex
 
   describe "gribIndexNew and gribIndexAddFile" $
     it "should create a new index and add a file to it" $ do

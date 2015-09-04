@@ -276,7 +276,6 @@ spec = do
           `shouldThrow` isGribException GribNotFound
 
   describe "gribCopyNamespace" $
-    it "should fail with GribNotImplemented" $
+    it "should succeed to copy namespace ls to itself" $
       withRegular1 $ \h ->
-        gribCopyNamespace h Nothing h
-          `shouldThrow` isGribException GribNotImplemented
+        gribCopyNamespace h (Just "ls") h

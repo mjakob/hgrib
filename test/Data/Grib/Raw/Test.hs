@@ -11,7 +11,8 @@ Utilities for the unit tests of HGrib's raw interface.
 -}
 
 module Data.Grib.Raw.Test
-       ( safeRemoveFile
+       ( skipIfGribApiVersion
+       , safeRemoveFile
        , withGribFile
        , regular1Path
        , regular2Path
@@ -23,9 +24,15 @@ import Control.Exception (tryJust)
 import Control.Monad     ((>=>), guard, void)
 import System.Directory  (removeFile)
 import System.IO.Error   (isDoesNotExistError)
+import Test.Hspec        (SpecWith)
 
 import Data.Grib.Raw
 
+
+skipIfGribApiVersion :: (Int -> Bool) -> SpecWith a -> SpecWith a
+skipIfGribApiVersion p
+  | p gribGetApiVersion = const $ return ()
+  | otherwise           = id
 
 safeRemoveFile :: FilePath -> IO ()
 safeRemoveFile path =

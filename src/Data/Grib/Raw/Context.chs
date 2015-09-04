@@ -55,6 +55,9 @@ module Data.Grib.Raw.Context
        , GribDataTellProc
        , GribDataSeekProc
        , GribDataEofProc
+
+         -- * GRIB API Version
+       , gribGetApiVersion
        ) where
 
 import Foreign
@@ -62,6 +65,15 @@ import Foreign.C
 
 
 #include <grib_api.h>
+
+-- |Get the current version of GRIB API as an integer.
+--
+-- The major version is multiplied by 10000, the minor by 100 and then
+-- they are summed together with the revision version to form the
+-- integer. For example, version 1.13.1 would be 11301.
+{#fun pure unsafe grib_get_api_version as ^ {} -> `Int' #}
+
+-- This comment is inserted to help Haddock keep all docs.
 
 -- typedef struct grib_context grib_context;
 --
@@ -83,8 +95,6 @@ defaultGribContext = GribContext nullPtr
 -- |Grib free procedure, format of a procedure referenced in the
 -- context that is used to free memory.
 {#pointer grib_free_proc as GribFreeProc #}
-
--- This comment is inserted to help Haddock keep all docs.
 
 -- typedef void* (*grib_malloc_proc)(const grib_context* c, size_t length);
 --

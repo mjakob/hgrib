@@ -160,7 +160,7 @@ gribIndexGetLong :: GribIndex  -- ^an index created from a file. The
                  -> IO [Int]   -- ^an IO action that will return the
                                -- data in a list
 gribIndexGetLong idx key ls n = withGribIndex idx $ \idx' ->
-  map fromIntegral <$> getArray (cCall idx') key ls n
+  fmap (map fromIntegral) $ getArray (cCall idx') key ls n
   where cCall = {#call grib_index_get_long as gribIndexGetLong'_ #}
 
 -- int grib_index_get_double(grib_index* index, const char* key,
@@ -193,7 +193,7 @@ gribIndexGetDouble :: GribIndex    -- ^an index created from a
                    -> IO [Double]  -- ^an IO action that will return
                                    -- the data in a list
 gribIndexGetDouble idx key ds n = withGribIndex idx $ \idx' ->
-  map realToFrac <$> getArray (cCall idx') key ds n
+  fmap (map realToFrac) $ getArray (cCall idx') key ds n
   where cCall = {#call grib_index_get_double as gribIndexGetDouble'_ #}
 
 -- int grib_index_get_string(grib_index* index, const char* key, char** values,

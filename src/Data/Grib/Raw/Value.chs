@@ -162,7 +162,7 @@ gribGetDoubleElements h key is =
   withArrayLen (map fromIntegral is) $ \n is' ->
   allocaArray n                      $ \ds    -> do
     cCall h' key' is' (fromIntegral n) ds >>= checkStatus
-    map realToFrac <$> peekArray n ds
+    fmap (map realToFrac) $ peekArray n ds
   where cCall = {#call grib_get_double_elements as gribGetDoubleElements'_ #}
 
 -- int grib_get_string(grib_handle* h, const char* key, char* mesg,
@@ -199,7 +199,7 @@ gribGetString h key cs n =
   withCString key       $ \key' ->
   with (fromIntegral n) $ \n'   -> do
     cCall h' key' cs n' >>= checkStatus
-    fromIntegral . subtract 1 <$> peek n' >>= curry peekCStringLen cs
+    fmap (fromIntegral . subtract 1) (peek n') >>= curry peekCStringLen cs
   where cCall = {#call grib_get_string as gribGetString'_ #}
 
 -- int grib_get_bytes(grib_handle* h, const char* key, unsigned char* bytes,
@@ -263,7 +263,7 @@ gribGetDoubleArray :: GribHandle   -- ^the handle to get the data from
                    -> IO [Double]  -- ^an IO action that will return the
                                    -- data in a list
 gribGetDoubleArray h key ds n = withGribHandle h $ \h' ->
-  map realToFrac <$> getArray (cCall h') key ds n
+  fmap (map realToFrac) $ getArray (cCall h') key ds n
   where cCall = {#call grib_get_double_array as gribGetDoubleArray'_ #}
 
 -- int grib_get_long_array(grib_handle* h, const char* key, long* vals,
@@ -299,7 +299,7 @@ gribGetLongArray :: GribHandle  -- ^the handle to get the data from
                  -> IO [Int]    -- ^an IO action that will return the
                                 -- data in a list
 gribGetLongArray h key ls n = withGribHandle h $ \h' ->
-  map fromIntegral <$> getArray (cCall h') key ls n
+  fmap (map fromIntegral) $ getArray (cCall h') key ls n
   where cCall = {#call grib_get_long_array as gribGetLongArray'_ #}
 
 -- int grib_copy_namespace(grib_handle* dest, const char* name,
@@ -377,7 +377,7 @@ gribSetString h key msg =
   withCString key                  $ \key' ->
   withCString msg                  $ \msg' ->
   with (fromIntegral $ length msg) $ \n    ->
-    cCall h' key' msg' n >>= checkStatus >> fromIntegral <$> peek n
+    cCall h' key' msg' n >>= checkStatus >> fmap fromIntegral (peek n)
   where cCall = {#call grib_set_string as gribSetString'_ #}
 
 -- int grib_set_bytes(grib_handle* h, const char* key,
