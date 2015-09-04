@@ -41,7 +41,8 @@ spec =
         gribKeysIteratorNext kiter `shouldReturn` True
         gribKeysIteratorGetName kiter `shouldReturn` "editionNumber"
 
-    it "should return totalLength when SkipComputed is set after creation" $
+    skipIfGribApiVersion (< 11300) $  -- GRIB API issue GRIB-566
+      it "should return totalLength when SkipComputed is set after creation" $
       let flags = [GribKeysIteratorSkipComputed] in
       withRegular1 $ \h -> withGribKeysIterator h [] Nothing $ \kiter -> do
         gribKeysIteratorSetFlags kiter flags
