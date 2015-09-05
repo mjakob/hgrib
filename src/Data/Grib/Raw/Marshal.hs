@@ -30,11 +30,13 @@ module Data.Grib.Raw.Marshal
        , getArray
        ) where
 
-import Control.Exception (throw, throwIO)
-import Control.Monad     ((>=>))
-import Data.List         (intercalate)
-import Foreign
-import Foreign.C
+import Control.Exception ( throw, throwIO )
+import Control.Monad     ( (>=>) )
+import Data.List         ( intercalate )
+import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.), bit
+                         , clearBit, maybeWith, newForeignPtr, nullPtr, peek
+                         , peekArray, with, withArrayLen )
+import Foreign.C         ( CInt, CString, withCString )
 
 import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Types

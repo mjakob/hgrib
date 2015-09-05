@@ -10,7 +10,7 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.KeysIterator.
 -}
 
-module Data.Grib.Raw.KeysIteratorSpec (main, spec) where
+module Data.Grib.Raw.KeysIteratorSpec ( main, spec ) where
 
 import Test.Hspec
 import Data.Grib.Raw

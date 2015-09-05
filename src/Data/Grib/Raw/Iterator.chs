@@ -26,12 +26,12 @@ module Data.Grib.Raw.Iterator
        , withGribIterator
        ) where
 
-import Control.Exception (bracket)
-import Foreign
-import Foreign.C
+import Control.Exception ( bracket )
+import Foreign           ( alloca )
 
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
+
 
 #include <grib_api.h>
 

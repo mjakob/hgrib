@@ -20,11 +20,11 @@ module Data.Grib.Raw.Test
        , withRegular2
        ) where
 
-import Control.Exception (tryJust)
-import Control.Monad     ((>=>), guard, void)
-import System.Directory  (removeFile)
-import System.IO.Error   (isDoesNotExistError)
-import Test.Hspec        (SpecWith)
+import Control.Exception ( tryJust )
+import Control.Monad     ( (>=>), guard, void )
+import System.Directory  ( removeFile )
+import System.IO.Error   ( isDoesNotExistError )
+import Test.Hspec        ( SpecWith )
 
 import Data.Grib.Raw
 

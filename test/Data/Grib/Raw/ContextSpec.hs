@@ -10,12 +10,12 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Context.
 -}
 
-module Data.Grib.Raw.ContextSpec (main, spec) where
+module Data.Grib.Raw.ContextSpec ( main, spec ) where
 
-import Control.Exception (bracket)
+import Control.Exception ( bracket )
 
 import Test.Hspec
-import Data.Grib.Raw.Context
+import Data.Grib.Raw
 
 
 main :: IO ()

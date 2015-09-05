@@ -10,10 +10,10 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Handle.
 -}
 
-module Data.Grib.Raw.HandleSpec (main, spec) where
+module Data.Grib.Raw.HandleSpec ( main, spec ) where
 
-import Control.Monad (void)
-import Foreign       (allocaBytes, nullPtr)
+import Control.Monad ( void )
+import Foreign       ( allocaBytes, nullPtr )
 
 import Test.Hspec
 import Data.Grib.Raw

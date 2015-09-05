@@ -10,9 +10,9 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Value.
 -}
 
-module Data.Grib.Raw.ValueSpec (main, spec) where
+module Data.Grib.Raw.ValueSpec ( main, spec ) where
 
-import Foreign
+import Foreign ( allocaArray, allocaBytes, nullPtr )
 
 import Test.Hspec
 import Data.Grib.Raw

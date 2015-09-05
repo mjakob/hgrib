@@ -45,8 +45,8 @@ module Data.Grib.Raw.Handle
        , gribCountInFile
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign   ( Ptr, alloca, peek, with )
+import Foreign.C ( CSize, withCString )
 
 {#import Data.Grib.Raw.CFile #}
 {#import Data.Grib.Raw.Context #}

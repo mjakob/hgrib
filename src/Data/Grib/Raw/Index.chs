@@ -40,12 +40,13 @@ module Data.Grib.Raw.Index
        , gribHandleNewFromIndex
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign   ( Ptr, alloca )
+import Foreign.C ( CDouble, CLong, CSize, CString, peekCString, withCString )
 
 {#import Data.Grib.Raw.Context #}
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
+
 
 #include <grib_api.h>
 

@@ -10,10 +10,10 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Index.
 -}
 
-module Data.Grib.Raw.IndexSpec (main, spec) where
+module Data.Grib.Raw.IndexSpec ( main, spec ) where
 
-import Control.Monad (void)
-import Foreign       (alloca)
+import Control.Monad ( void )
+import Foreign       ( alloca )
 
 import Test.Hspec
 import Data.Grib.Raw

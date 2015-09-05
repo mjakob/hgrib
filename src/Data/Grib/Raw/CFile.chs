@@ -18,10 +18,11 @@ module Data.Grib.Raw.CFile
        , IOMode(..)
        ) where
 
-import Control.Exception (bracket)
-import Control.Monad     (when)
-import Foreign.C
-import System.IO         (IOMode(..))
+import Control.Exception ( bracket )
+import Control.Monad     ( when )
+import Foreign.C         ( CInt, CFile, throwErrno, throwErrnoPathIfNull
+                         , withCString )
+import System.IO         ( IOMode(..) )
 
 
 #include <stdio.h>

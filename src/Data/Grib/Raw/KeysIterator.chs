@@ -31,11 +31,11 @@ module Data.Grib.Raw.KeysIterator
        , gribKeysIteratorSetFlags
        ) where
 
-import Control.Exception (bracket, throw)
-import Foreign
-import Foreign.C
+import Control.Exception ( bracket, throw )
+import Foreign           ( nullPtr )
+import Foreign.C         ( peekCString )
 
-{#import Data.Grib.Raw.Exception #}
+import Data.Grib.Raw.Exception
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
 

@@ -60,8 +60,7 @@ module Data.Grib.Raw.Context
        , gribGetApiVersion
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign ( nullPtr )
 
 
 #include <grib_api.h>

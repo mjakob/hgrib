@@ -41,11 +41,13 @@ module Data.Grib.Raw.Value
        , gribCopyNamespace
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign   ( Ptr, alloca, allocaArray, peek, peekArray, with
+                 , withArrayLen )
+import Foreign.C ( CDouble, CLong, CSize, CString, peekCStringLen, withCString )
 
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
+
 
 #include <grib_api.h>
 

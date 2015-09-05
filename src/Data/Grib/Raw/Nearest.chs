@@ -28,8 +28,9 @@ module Data.Grib.Raw.Nearest
        ) where
 
 import Control.Exception (bracket)
-import Foreign
-import Foreign.C
+import Foreign           ( Ptr, Storable, alloca, allocaArray, fromBool
+                         , peekArray, with, withArray )
+import Foreign.C         ( CSize )
 
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
