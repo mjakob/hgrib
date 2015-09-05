@@ -41,6 +41,7 @@ library
       Data.Grib.Raw.Handle
 
       -- These modules can import any of the modules above via c2hs:
+      Data.Grib.Raw.Fieldset
       Data.Grib.Raw.Index
       Data.Grib.Raw.Iterator
       Data.Grib.Raw.KeysIterator

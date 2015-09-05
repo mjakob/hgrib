@@ -21,6 +21,7 @@ module Data.Grib.Raw.Marshal
        , peekIntegralArray
        , peekReal
        , peekRealArray
+       , withCStrings
        , withIntegral
        , withIntegralArrayLen
        , withJoinedCString
@@ -33,9 +34,10 @@ module Data.Grib.Raw.Marshal
 import Control.Exception ( throw, throwIO )
 import Control.Monad     ( (>=>) )
 import Data.List         ( intercalate )
-import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.), bit
-                         , clearBit, maybeWith, newForeignPtr, nullPtr, peek
-                         , peekArray, with, withArrayLen )
+import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.)
+                         , allocaArray, bit, clearBit, maybeWith, newForeignPtr
+                         , nullPtr, peek, peekArray, pokeArray, with
+                         , withArrayLen, withMany )
 import Foreign.C         ( CInt, CString, withCString )
 
 import Data.Grib.Raw.Exception
@@ -68,6 +70,11 @@ peekReal = fmap realToFrac . peek
 
 peekRealArray :: (Real a, Storable a, Fractional b) => Int -> Ptr a -> IO [b]
 peekRealArray n = fmap (map realToFrac) . peekArray n
+
+withCStrings :: [String] -> ((Ptr CString, CInt) -> IO a) -> IO a
+withCStrings ss f = allocaArray n $ \p -> withMany withCString ss $ \css ->
+  pokeArray p css >> f (p, fromIntegral n)
+  where n = length ss
 
 withIntegral :: (Integral a, Num b, Storable b) => a -> (Ptr b -> IO c) -> IO c
 withIntegral = with . fromIntegral
