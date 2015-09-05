@@ -33,16 +33,21 @@ library
   hs-source-dirs:    src
   exposed-modules:
       Data.Grib.Raw
+      Data.Grib.Raw.Exception
+
+      -- These modules need to go above any modules importing them via c2hs:
       Data.Grib.Raw.CFile
       Data.Grib.Raw.Context
-      Data.Grib.Raw.Exception
       Data.Grib.Raw.Handle
+
+      -- These modules can import any of the modules above via c2hs:
       Data.Grib.Raw.Index
       Data.Grib.Raw.Iterator
       Data.Grib.Raw.KeysIterator
       Data.Grib.Raw.Nearest
       Data.Grib.Raw.Types
       Data.Grib.Raw.Value
+
   other-modules:
       Data.Grib.Raw.Marshal
   build-depends:
