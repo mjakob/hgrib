@@ -16,7 +16,6 @@ import Foreign
 
 import Test.Hspec
 import Data.Grib.Raw
-import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Test
 
 

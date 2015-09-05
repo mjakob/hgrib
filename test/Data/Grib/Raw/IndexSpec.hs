@@ -17,7 +17,6 @@ import Foreign       (alloca)
 
 import Test.Hspec
 import Data.Grib.Raw
-import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Test hiding (withRegular1)
 
 
