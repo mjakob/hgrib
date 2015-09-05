@@ -53,8 +53,7 @@ fromFlagList = fromIntegral . foldr ((.|.) . fromEnum) zeroBits'
   where zeroBits' = clearBit (bit 0) 0
 
 maybeWithCString :: Maybe String -> (CString -> IO a) -> IO a
-maybeWithCString (Just s) f = withCString s f
-maybeWithCString Nothing  f = f nullPtr
+maybeWithCString = maybeWith withCString
 
 peekIntegral :: (Integral a, Storable a, Num b) => Ptr a -> IO b
 peekIntegral = fmap fromIntegral . peek
