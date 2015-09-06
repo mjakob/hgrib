@@ -45,9 +45,10 @@ eof = {#const EOF #}
 -- file 'System.IO.Handle'.
 openBinaryCFile :: FilePath -> IOMode -> IO CFilePtr
 openBinaryCFile name mode =
-  withCString name $ \c_name ->
+  withCString name     $ \c_name ->
   withCString mode_str $ \c_mode ->
-  throwErrnoPathIfNull "openBinaryCFile" name ({#call fopen #} c_name c_mode)
+  throwErrnoPathIfNull "openBinaryCFile" name $
+    {#call unsafe fopen #} c_name c_mode
   where mode_str = case mode of
           ReadMode      -> "rb"
           WriteMode     -> "wb"
@@ -55,7 +56,7 @@ openBinaryCFile name mode =
           ReadWriteMode -> "r+b"
 
 -- |Close an open 'Foreign.C.CFile'.
-{#fun fclose as closeCFile { `CFilePtr' } -> `()' checkStatus*- #}
+{#fun unsafe fclose as closeCFile { `CFilePtr' } -> `()' checkStatus*- #}
   where checkStatus r = when (r == eof) $ throwErrno "closeCFile"
 
 -- |Like 'System.IO.withBinaryFile', but use a 'CFilePtr' instead of a file

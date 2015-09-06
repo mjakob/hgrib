@@ -78,7 +78,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 -- int grib_count_in_file(grib_context *c, FILE *f, int *n);
 --
 -- |Counts the messages contained in a file resource.
-{#fun grib_count_in_file as ^ {
+{#fun unsafe grib_count_in_file as ^ {
               `GribContext'
     ,         `CFilePtr'
     , alloca- `Int'        peekIntegral*
@@ -90,7 +90,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 -- The file is read until a message is found. The message is then
 -- copied.
-{#fun grib_handle_new_from_file as ^ {
+{#fun unsafe grib_handle_new_from_file as ^ {
               `GribContext'
     ,         `CFilePtr'
     , alloca- `CInt'        checkStatusPtr*-
@@ -100,7 +100,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 -- |Write a coded message to a file given its name and the C file mode
 -- string, in that order.
-{#fun grib_write_message as ^ {
+{#fun unsafe grib_write_message as ^ {
                    `GribHandle'
     , withCString* `FilePath'
     ,              `String'
@@ -121,7 +121,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 -- __WARNING!__ This method does not handle a message of zero length
 -- gracefully.
-{#fun grib_handle_new_from_message as ^ {
+{#fun unsafe grib_handle_new_from_message as ^ {
          `GribContext'
     , id `Message'
     ,    `Int'
@@ -135,7 +135,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 -- The message will not be freed at the end. The message will be
 -- copied as soon as a modification is needed. This function works
 -- also with multi field messages.
-{#fun grib_handle_new_from_multi_message as ^ {
+{#fun unsafe grib_handle_new_from_multi_message as ^ {
                     `GribContext'
     , with*         `Message'     peek*
     , withIntegral* `Int'         peekIntegral*
@@ -154,7 +154,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 --   * @NullPtrReturned@ if the message is invalid or a problem is
 --   encountered.
-{#fun grib_handle_new_from_message_copy as ^ {
+{#fun unsafe grib_handle_new_from_message_copy as ^ {
          `GribContext'
     , id `Message'
     ,    `Int'
@@ -173,7 +173,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 --   * @NullPtrReturned@ if the resource is invalid or a problem is
 --   encountered.
-{#fun grib_handle_new_from_template as ^ {
+{#fun unsafe grib_handle_new_from_template as ^ {
       `GribContext'
     , `String'
     } -> `GribHandle' checkHandle* #}
@@ -189,7 +189,7 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 --   * @NullPtrReturned@ if the resource is invalid or a problem is
 --   encountered.
-{#fun grib_handle_new_from_samples as ^ {
+{#fun unsafe grib_handle_new_from_samples as ^ {
       `GribContext'  -- ^the context from which the handle will be
                      -- created (NULL for default context)
     , `String'       -- ^the resource name
@@ -205,7 +205,9 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 --
 --   * @NullPtrReturned@ if the message is invalid or a problem is
 --   encountered.
-{#fun grib_handle_clone as ^ { `GribHandle' } -> `GribHandle' checkHandle* #}
+{#fun unsafe grib_handle_clone as ^ {
+      `GribHandle'
+    } -> `GribHandle' checkHandle* #}
 
 -- typedef struct grib_multi_handle grib_multi_handle;
 --
@@ -231,7 +233,7 @@ checkMultiHandle = checkForeignPtr GribMultiHandle gribMultiHandleFinalizer
 -- This operation may fail with:
 --
 --   * @NullPtrReturned@ if a problem is encountered.
-{#fun grib_multi_handle_new as ^ {
+{#fun unsafe grib_multi_handle_new as ^ {
     `GribContext'
     } -> `GribMultiHandle' checkMultiHandle* #}
 
@@ -240,7 +242,7 @@ checkMultiHandle = checkForeignPtr GribMultiHandle gribMultiHandleFinalizer
 --
 -- |Append the sections starting with start_section of the message
 -- pointed by h at the end of the multi field handle mh.
-{#fun grib_multi_handle_append as ^ {
+{#fun unsafe grib_multi_handle_append as ^ {
       `GribHandle'
     , `Int'
     , `GribMultiHandle'
@@ -249,7 +251,7 @@ checkMultiHandle = checkForeignPtr GribMultiHandle gribMultiHandleFinalizer
 -- int grib_multi_handle_write(grib_multi_handle* mh, FILE* f);
 --
 -- |Write a multi field handle in a file.
-{#fun grib_multi_handle_write as ^ {
+{#fun unsafe grib_multi_handle_write as ^ {
     `GribMultiHandle',
     `CFilePtr'
     } -> `()' checkStatus*- #}
@@ -258,7 +260,7 @@ checkMultiHandle = checkForeignPtr GribMultiHandle gribMultiHandleFinalizer
 --                      size_t *message_length);
 --
 -- |Getting the message attached to a handle.
-{#fun grib_get_message as ^ {
+{#fun unsafe grib_get_message as ^ {
               `GribHandle'
     , alloca- `Message'    peek*
     , alloca- `Int'        peekIntegral*
@@ -273,7 +275,7 @@ checkMultiHandle = checkForeignPtr GribMultiHandle gribMultiHandleFinalizer
 --
 --   * @isGribException GribBufferTooSmall@ if the allocated message
 --   is too small.
-{#fun grib_get_message_copy as ^ {
+{#fun unsafe grib_get_message_copy as ^ {
                     `GribHandle'
       -- ^the grib handle to which the buffer should be returned
     , id            `Message'    id

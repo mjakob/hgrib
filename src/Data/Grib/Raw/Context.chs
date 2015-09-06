@@ -48,6 +48,8 @@ import Foreign ( nullPtr )
 
 #include <grib_api.h>
 
+-- long grib_get_api_version(void);
+--
 -- |Get the current version of GRIB API as an integer.
 --
 -- The major version is multiplied by 10000, the minor by 100 and then
@@ -80,12 +82,12 @@ defaultGribContext = GribContext nullPtr
 -- 'defaultGribContext', since that is just a null pointer and this is
 -- a pointer to the real thing.  They should, however, be able to be
 -- used interchangeably with all the functions in this package.
-{#fun grib_context_get_default as ^ {} -> `GribContext' #}
+{#fun unsafe grib_context_get_default as ^ {} -> `GribContext' #}
 
 -- grib_context* grib_context_new(grib_context* c);
 --
 -- |Create and allocate a new context from a parent context.
-{#fun grib_context_new as ^ { `GribContext' } -> `GribContext' #}
+{#fun unsafe grib_context_new as ^ { `GribContext' } -> `GribContext' #}
 
 -- void grib_context_delete(grib_context* c);
 --
@@ -95,41 +97,41 @@ defaultGribContext = GribContext nullPtr
 -- deleted (by this function).
 --
 -- |Frees the cached definition files of the context.
-{#fun grib_context_delete as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_context_delete as ^ { `GribContext' } -> `()' #}
 
 -- void grib_gts_header_on(grib_context* c);
 --
 -- |Set the gts header mode on.  The GTS headers will be preserved.
-{#fun grib_gts_header_on as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_gts_header_on as ^ { `GribContext' } -> `()' #}
 
 -- void grib_gts_header_off(grib_context* c);
 --
 -- |Set the gts header mode off.  The GTS headers will be deleted.
-{#fun grib_gts_header_off as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_gts_header_off as ^ { `GribContext' } -> `()' #}
 
 -- void grib_gribex_mode_on(grib_context* c);
 --
 -- |Set the gribex mode on.  Grib files will be compatible with
 -- gribex.
-{#fun grib_gribex_mode_on as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_gribex_mode_on as ^ { `GribContext' } -> `()' #}
 
 -- int grib_get_gribex_mode(grib_context* c);
 --
 -- |Get the gribex mode.
-{#fun grib_get_gribex_mode as ^ { `GribContext' } -> `Bool' #}
+{#fun unsafe grib_get_gribex_mode as ^ { `GribContext' } -> `Bool' #}
 
 -- void grib_gribex_mode_off(grib_context* c);
 --
 -- |Set the gribex mode off.  Grib files won't be always compatible
 -- with gribex.
-{#fun grib_gribex_mode_off as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_gribex_mode_off as ^ { `GribContext' } -> `()' #}
 
 -- void grib_multi_support_on(grib_context* c);
 --
 -- |Turn on support for multiple fields in single grib messages.
-{#fun grib_multi_support_on as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_multi_support_on as ^ { `GribContext' } -> `()' #}
 
 -- void grib_multi_support_off(grib_context* c);
 --
 -- |Turn off support for multiple fields in single grib messages.
-{#fun grib_multi_support_off as ^ { `GribContext' } -> `()' #}
+{#fun unsafe grib_multi_support_off as ^ { `GribContext' } -> `()' #}

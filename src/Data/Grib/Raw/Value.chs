@@ -61,7 +61,7 @@ import Data.Grib.Raw.Marshal
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_get_offset as ^ {
+{#fun unsafe grib_get_offset as ^ {
                    `GribHandle'
     , withCString* `Key'
     , alloca-      `Int'        peekIntegral*
@@ -75,7 +75,7 @@ import Data.Grib.Raw.Marshal
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_get_size as ^ {
+{#fun unsafe grib_get_size as ^ {
                    `GribHandle'
     , withCString* `Key'
     , alloca-      `Int'        peekIntegral*
@@ -89,7 +89,7 @@ import Data.Grib.Raw.Marshal
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_get_length as ^ {
+{#fun unsafe grib_get_length as ^ {
                    `GribHandle'
     , withCString* `Key'
     , alloca-      `Int'        peekIntegral*
@@ -103,7 +103,7 @@ import Data.Grib.Raw.Marshal
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_get_long as ^ {
+{#fun unsafe grib_get_long as ^ {
                    `GribHandle'
     , withCString* `Key'
     , alloca-      `Int'        peekIntegral*
@@ -117,7 +117,7 @@ import Data.Grib.Raw.Marshal
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_get_double as ^ {
+{#fun unsafe grib_get_double as ^ {
                    `GribHandle'
     , withCString* `Key'
     , alloca-      `Double'     peekReal*
@@ -136,7 +136,7 @@ import Data.Grib.Raw.Marshal
 --   * @isGribException GribNotFound@ if the key is missing.
 --
 -- __WARNING!__ There is no check if the index is out of bounds.
-{#fun grib_get_double_element as ^ {
+{#fun unsafe grib_get_double_element as ^ {
                    `GribHandle'
     , withCString* `Key'
     ,              `Int'
@@ -165,7 +165,7 @@ gribGetDoubleElements h key is =
   allocaArray n                      $ \ds    -> do
     cCall h' key' is' (fromIntegral n) ds >>= checkStatus
     fmap (map realToFrac) $ peekArray n ds
-  where cCall = {#call grib_get_double_elements as gribGetDoubleElements'_ #}
+  where cCall = {#call unsafe grib_get_double_elements #}
 
 -- int grib_get_string(grib_handle* h, const char* key, char* mesg,
 --                     size_t *length);
@@ -202,7 +202,7 @@ gribGetString h key cs n =
   with (fromIntegral n) $ \n'   -> do
     cCall h' key' cs n' >>= checkStatus
     fmap (fromIntegral . subtract 1) (peek n') >>= curry peekCStringLen cs
-  where cCall = {#call grib_get_string as gribGetString'_ #}
+  where cCall = {#call unsafe grib_get_string #}
 
 -- int grib_get_bytes(grib_handle* h, const char* key, unsigned char* bytes,
 --                    size_t *length);
@@ -218,7 +218,7 @@ gribGetString h key cs n =
 --
 --   * @isGribException GribArrayTooSmall@ if the allocated array is
 --   too small.
-{#fun grib_get_bytes as ^ {
+{#fun unsafe grib_get_bytes as ^ {
                     `GribHandle'
       -- ^the handle to get the data from
     , withCString*  `Key'
@@ -266,7 +266,7 @@ gribGetDoubleArray :: GribHandle   -- ^the handle to get the data from
                                    -- data in a list
 gribGetDoubleArray h key ds n = withGribHandle h $ \h' ->
   fmap (map realToFrac) $ getArray (cCall h') key ds n
-  where cCall = {#call grib_get_double_array as gribGetDoubleArray'_ #}
+  where cCall = {#call unsafe grib_get_double_array #}
 
 -- int grib_get_long_array(grib_handle* h, const char* key, long* vals,
 --                         size_t *length);
@@ -302,7 +302,7 @@ gribGetLongArray :: GribHandle  -- ^the handle to get the data from
                                 -- data in a list
 gribGetLongArray h key ls n = withGribHandle h $ \h' ->
   fmap (map fromIntegral) $ getArray (cCall h') key ls n
-  where cCall = {#call grib_get_long_array as gribGetLongArray'_ #}
+  where cCall = {#call unsafe grib_get_long_array #}
 
 -- int grib_copy_namespace(grib_handle* dest, const char* name,
 --                         grib_handle* src);
@@ -313,7 +313,7 @@ gribGetLongArray h key ls n = withGribHandle h $ \h' ->
 -- This operation may fail with:
 --
 --   * @isGribException GribNotImplemented@.
-{#fun grib_copy_namespace as ^ {
+{#fun unsafe grib_copy_namespace as ^ {
       `GribHandle'                      -- ^destination handle
     , maybeWithCString* `Maybe String'  -- ^namespace (pass @Nothing@
                                         -- to copy all keys)
@@ -333,7 +333,7 @@ gribGetLongArray h key ls n = withGribHandle h $ \h' ->
 --   * @isGribException GribNotFound@ if the key is missing; or
 --
 --   * @isGribException GribReadOnly@ if the key is read-only.
-{#fun grib_set_long as ^ {
+{#fun unsafe grib_set_long as ^ {
                    `GribHandle'
     , withCString* `Key'
     ,              `Int'
@@ -351,7 +351,7 @@ gribGetLongArray h key ls n = withGribHandle h $ \h' ->
 --   * @isGribException GribNotFound@ if the key is missing; or
 --
 --   * @isGribException GribReadOnly@ if the key is read-only.
-{#fun grib_set_double as ^ {
+{#fun unsafe grib_set_double as ^ {
                    `GribHandle'
     , withCString* `Key'
     ,              `Double'
@@ -380,7 +380,7 @@ gribSetString h key msg =
   withCString msg                  $ \msg' ->
   with (fromIntegral $ length msg) $ \n    ->
     cCall h' key' msg' n >>= checkStatus >> fmap fromIntegral (peek n)
-  where cCall = {#call grib_set_string as gribSetString'_ #}
+  where cCall = {#call unsafe grib_set_string #}
 
 -- int grib_set_bytes(grib_handle* h, const char* key,
 --                    const unsigned char* bytes, size_t *length);
@@ -392,7 +392,7 @@ gribSetString h key msg =
 -- This operation may fail with:
 --
 --   * @isGribException GribNotFound@ if the key is missing.
-{#fun grib_set_bytes as ^ {
+{#fun unsafe grib_set_bytes as ^ {
                     `GribHandle'
     , withCString*  `Key'
     , id            `Bytes'
@@ -414,7 +414,7 @@ gribSetString h key msg =
 --
 -- __WARNING!__ Strange things seem to happen if an empty list is
 -- passed in.
-{#fun grib_set_double_array as ^ {
+{#fun unsafe grib_set_double_array as ^ {
                         `GribHandle'
     , withCString*      `Key'
     , withRealArrayLen* `[Double]'&
@@ -432,7 +432,7 @@ gribSetString h key msg =
 --   * @isGribException GribNotFound@ if the key is missing; or
 --
 --   * @isGribException GribReadOnly@ if the key is read-only.
-{#fun grib_set_long_array as ^ {
+{#fun unsafe grib_set_long_array as ^ {
                             `GribHandle'
     , withCString*          `Key'
     , withIntegralArrayLen* `[Int]'&

@@ -65,7 +65,7 @@ import Data.Grib.Raw.Marshal
 -- The returned object needs to be manually deleted with
 -- 'gribNearestDelete'.  This is handled automatically by
 -- 'withGribNearest'.
-{#fun grib_nearest_new as ^ {
+{#fun unsafe grib_nearest_new as ^ {
               `GribHandle'
     , alloca- `CInt'       checkStatusPtr*-
     } -> `GribNearest' #}
@@ -82,7 +82,7 @@ import Data.Grib.Raw.Marshal
 -- call to another you can use GRIB_NEAREST_SAME_POINT. The same is
 -- valid for the grid. Flags can be used together doing a bitwise
 -- OR. The distances are given in kilometres.
-{#fun grib_nearest_find as ^ {
+{#fun unsafe grib_nearest_find as ^ {
                     `GribNearest'
     ,               `GribHandle'
     ,               `Double'
@@ -104,7 +104,7 @@ import Data.Grib.Raw.Marshal
 -- int grib_nearest_delete(grib_nearest *nearest);
 --
 -- |Frees an nearest from memory.
-{#fun grib_nearest_delete as ^ { `GribNearest' } -> `()' checkStatus* #}
+{#fun unsafe grib_nearest_delete as ^ { `GribNearest' } -> `()' checkStatus* #}
 
 -- int grib_nearest_find_multiple(grib_handle* h, int is_lsm, double* inlats,
 --                                double* inlons, long npoints, double* outlats,
@@ -157,7 +157,7 @@ gribNearestFindMultiple h lsm ilats ilons =
     dists' <- fmap (map realToFrac)   (peekArray n dists)
     is'    <- fmap (map fromIntegral) (peekArray n is)
     return (olats', olons', vals', dists', is')
-  where cCall = {#call grib_nearest_find_multiple as gribNearestFindMultiple'_ #}
+  where cCall = {#call unsafe grib_nearest_find_multiple #}
 
 -- |Safely create, use and delete a 'GribNearest'.
 --
