@@ -5,14 +5,9 @@
 Unofficial bindings for [ECMWF][]'s [GRIB API][] library for reading
 [WMO FM-92 GRIB][] edition 1 and edition 2 messages.
 
-In this version of HGrib, only raw bindings for the
-[documented][GRIB Docs] part of GRIB API is available.  The next
-versions are intended to include, in chronological order,
-
-  * Raw bindings for the full API in the [grib_api.h][GRIB Header] C
-    header file.
-
-  * A higher-level Haskell interface.
+In this version of HGrib, raw bindings for the [documented][GRIB Docs]
+part of GRIB API is available.  Future versions are intended to
+include a higher-level Haskell interface.
 
 
 ## Installation
@@ -96,7 +91,9 @@ main = do
 
 ## Contributing
 
-Issues and pull requests are most welcome!
+Issues and pull requests are most welcome!  In particular, let me know
+if there is any undocumented part of GRIB API that you would like to
+have included.
 
 
 ## Licenses
@@ -117,7 +114,6 @@ ECMWF or the original library.**
 [GRIB API]:          https://software.ecmwf.int/wiki/display/GRIB/Home
 [GRIB Docs]:         https://software.ecmwf.int/wiki/display/GRIB/Module+Index
 [GRIB Get]:          https://software.ecmwf.int/wiki/display/GRIB/get.c
-[GRIB Header]:       https://software.ecmwf.int/wiki/display/GRIB/grib_api.h+File+Reference
 [Hackage]:           http://hackage.haskell.org/
 [Haddock]:           https://www.haskell.org/haddock/
 [HGRIB Docs]:        https://hackage.haskell.org/package/hgrib
