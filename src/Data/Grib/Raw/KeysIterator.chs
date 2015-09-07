@@ -31,11 +31,11 @@ module Data.Grib.Raw.KeysIterator
        , gribKeysIteratorSetFlags
        ) where
 
-import Control.Exception (bracket, throw)
-import Foreign
-import Foreign.C
+import Control.Exception ( bracket, throw )
+import Foreign           ( nullPtr )
+import Foreign.C         ( peekCString )
 
-{#import Data.Grib.Raw.Exception #}
+import Data.Grib.Raw.Exception
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
 
@@ -81,7 +81,7 @@ import Data.Grib.Raw.Marshal
 --
 --   * @NullPtrReturned@ if the handle is invalid or the memory
 --   allocation fails.
-{#fun grib_keys_iterator_new as ^ {
+{#fun unsafe grib_keys_iterator_new as ^ {
                         `GribHandle'
       -- ^the handle whose keys you want to iterate
     , fromFlagList      `[GribKeysIteratorFlag]'
@@ -100,13 +100,13 @@ import Data.Grib.Raw.Marshal
 -- int grib_keys_iterator_next(grib_keys_iterator *kiter);
 --
 -- |Try to step to the next key and return @True@ if successful.
-{#fun grib_keys_iterator_next as ^ { `GribKeysIterator' } -> `Bool' #}
+{#fun unsafe grib_keys_iterator_next as ^ { `GribKeysIterator' } -> `Bool' #}
 
 -- const char* grib_keys_iterator_get_name(grib_keys_iterator *kiter);
 --
 -- |Get the key name from the iterator.
-{#fun grib_keys_iterator_get_name as ^ {
-    `GribKeysIterator'
+{#fun unsafe grib_keys_iterator_get_name as ^ {
+      `GribKeysIterator'
     } -> `Key' peekCString* #}
 
 -- int grib_keys_iterator_delete(grib_keys_iterator* kiter);
@@ -118,25 +118,25 @@ import Data.Grib.Raw.Marshal
 -- undefined.  Because of this, 'withGribKeysIterator' should be
 -- preferred over directly using 'gribKeysIteratorNew' and this
 -- function.
-{#fun grib_keys_iterator_delete as ^ {
-    `GribKeysIterator'
+{#fun unsafe grib_keys_iterator_delete as ^ {
+      `GribKeysIterator'
     } -> `()' checkStatus*- #}
 
 -- int grib_keys_iterator_rewind(grib_keys_iterator* kiter);
 --
 -- |Rewind the iterator.
-{#fun grib_keys_iterator_rewind as ^ {
-    `GribKeysIterator'
+{#fun unsafe grib_keys_iterator_rewind as ^ {
+      `GribKeysIterator'
     } -> `()' checkStatus*- #}
 
 -- int grib_keys_iterator_set_flags(grib_keys_iterator *kiter,
 --                                  unsigned long flags);
 --
 -- |Update the flags of the iterator.
-{#fun grib_keys_iterator_set_flags as ^ {
+{#fun unsafe grib_keys_iterator_set_flags as ^ {
                    `GribKeysIterator'
     , fromFlagList `[GribKeysIteratorFlag]'
-  } -> `()' checkStatus*- #}
+    } -> `()' checkStatus*- #}
 
 -- |Safely create, use and delete a 'GribKeysIterator'.
 --

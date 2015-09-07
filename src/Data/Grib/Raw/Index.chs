@@ -40,12 +40,13 @@ module Data.Grib.Raw.Index
        , gribHandleNewFromIndex
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign   ( Ptr, alloca )
+import Foreign.C ( CDouble, CLong, CSize, CString, peekCString, withCString )
 
 {#import Data.Grib.Raw.Context #}
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
+
 
 #include <grib_api.h>
 
@@ -64,7 +65,7 @@ import Data.Grib.Raw.Marshal
 -- |Create a new index from a file.
 --
 -- The file is indexed with the keys in argument.
-{#fun grib_index_new_from_file as ^ {
+{#fun unsafe grib_index_new_from_file as ^ {
                          `GribContext'
       -- ^context
     , withCString*       `FilePath'
@@ -82,7 +83,7 @@ import Data.Grib.Raw.Marshal
 -- grib_index* grib_index_new(grib_context* c, const char* keys, int *err);
 --
 -- |Create a new index based on a set of keys.
-{#fun grib_index_new as ^ {
+{#fun unsafe grib_index_new as ^ {
                          `GribContext'
       -- ^context
     , withJoinedCString* `[Key]'
@@ -98,7 +99,7 @@ import Data.Grib.Raw.Marshal
 -- int grib_index_add_file(grib_index *index, const char *filename);
 --
 -- |Indexes the file given in argument in the index given in argument.
-{#fun grib_index_add_file as ^ {
+{#fun unsafe grib_index_add_file as ^ {
                    `GribIndex'
     , withCString* `FilePath'
     } -> `()' checkStatus*- #}
@@ -106,7 +107,7 @@ import Data.Grib.Raw.Marshal
 -- int grib_index_write(grib_index *index, const char *filename);
 --
 -- |Write the index and its messages to file.
-{#fun grib_index_write as ^ {
+{#fun unsafe grib_index_write as ^ {
                    `GribIndex'
     , withCString* `FilePath'
     } -> `()' checkStatus*- #}
@@ -114,7 +115,7 @@ import Data.Grib.Raw.Marshal
 -- grib_index* grib_index_read(grib_context* c, const char* filename, int *err);
 --
 -- |Read messages and their index from a file.
-{#fun grib_index_read as ^ {
+{#fun unsafe grib_index_read as ^ {
                    `GribContext'
     , withCString* `FilePath'
     , alloca-      `CInt'        checkStatusPtr*-
@@ -126,7 +127,7 @@ import Data.Grib.Raw.Marshal
 -- in the index.
 --
 -- The key must belong to the index.
-{#fun grib_index_get_size as ^ {
+{#fun unsafe grib_index_get_size as ^ {
                    `GribIndex'
     , withCString* `Key'
     , alloca-      `Int'       peekIntegral*
@@ -160,8 +161,8 @@ gribIndexGetLong :: GribIndex  -- ^an index created from a file. The
                  -> IO [Int]   -- ^an IO action that will return the
                                -- data in a list
 gribIndexGetLong idx key ls n = withGribIndex idx $ \idx' ->
-  map fromIntegral <$> getArray (cCall idx') key ls n
-  where cCall = {#call grib_index_get_long as gribIndexGetLong'_ #}
+  fmap (map fromIntegral) $ getArray (cCall idx') key ls n
+  where cCall = {#call unsafe grib_index_get_long #}
 
 -- int grib_index_get_double(grib_index* index, const char* key,
 --                           double* values, size_t *size);
@@ -193,8 +194,8 @@ gribIndexGetDouble :: GribIndex    -- ^an index created from a
                    -> IO [Double]  -- ^an IO action that will return
                                    -- the data in a list
 gribIndexGetDouble idx key ds n = withGribIndex idx $ \idx' ->
-  map realToFrac <$> getArray (cCall idx') key ds n
-  where cCall = {#call grib_index_get_double as gribIndexGetDouble'_ #}
+  fmap (map realToFrac) $ getArray (cCall idx') key ds n
+  where cCall = {#call unsafe grib_index_get_double #}
 
 -- int grib_index_get_string(grib_index* index, const char* key, char** values,
 --                           size_t *size);
@@ -232,7 +233,7 @@ gribIndexGetString :: GribIndex    -- ^an index created from a
                                    -- the data in a list
 gribIndexGetString idx key ss n = withGribIndex idx $ \idx' ->
   getArray (cCall idx') key ss n >>= mapM peekCString
-  where cCall = {#call grib_index_get_string as gribIndexGetString'_ #}
+  where cCall = {#call unsafe grib_index_get_string #}
 
 -- int grib_index_select_long(grib_index* index, const char* key, long value);
 --
@@ -242,7 +243,7 @@ gribIndexGetString idx key ss n = withGribIndex idx $ \idx' ->
 -- value is a long. The key must have been created with long type or
 -- have long as native type if the type was not explicitly defined in
 -- the index creation.
-{#fun grib_index_select_long as ^ {
+{#fun unsafe grib_index_select_long as ^ {
                    `GribIndex'
     , withCString* `Key'
     ,              `Int'
@@ -257,13 +258,14 @@ gribIndexGetString idx key ss n = withGribIndex idx $ \idx' ->
 -- value is a double. The key must have been created with double type
 -- or have double as native type if the type was not explicitly
 -- defined in the index creation.
-{#fun grib_index_select_double as ^ {
+{#fun unsafe grib_index_select_double as ^ {
                    `GribIndex'
     , withCString* `Key'
     ,              `Double'
     } -> `()' checkStatus*- #}
 
--- int grib_index_select_string(grib_index* index, const char* key, char* value);
+-- int grib_index_select_string(grib_index* index, const char* key,
+--                              char* value);
 --
 -- |Select the message subset with key==value.
 --
@@ -271,7 +273,7 @@ gribIndexGetString idx key ss n = withGribIndex idx $ \idx' ->
 -- value is a string. The key must have been created with string type
 -- or have string as native type if the type was not explicitly
 -- defined in the index creation.
-{#fun grib_index_select_string as ^ {
+{#fun unsafe grib_index_select_string as ^ {
                    `GribIndex'
     , withCString* `Key'
     ,              `String'
@@ -290,7 +292,7 @@ gribIndexGetString idx key ss n = withGribIndex idx $ \idx' ->
 --
 --   * @isGribException GribEndOfIndex@ when no more handles are
 --   available from the index.
-{#fun grib_handle_new_from_index as ^ {
+{#fun unsafe grib_handle_new_from_index as ^ {
               `GribIndex'
     , alloca- `CInt'      checkStatusPtr*-
     } -> `GribHandle' #}

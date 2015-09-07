@@ -10,16 +10,16 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.CFile.
 -}
 
-module Data.Grib.Raw.CFileSpec (main, spec) where
+module Data.Grib.Raw.CFileSpec ( main, spec ) where
 
-import Control.Exception (bracket)
-import Foreign
-import System.Directory  (getTemporaryDirectory, removeFile)
-import System.IO         (hClose, openTempFile)
-import System.IO.Error   (isDoesNotExistError)
+import Control.Exception ( bracket )
+import Foreign           ( nullPtr )
+import System.Directory  ( getTemporaryDirectory, removeFile )
+import System.IO         ( hClose, openTempFile )
+import System.IO.Error   ( isDoesNotExistError )
 
 import Test.Hspec
-import Data.Grib.Raw.CFile
+import Data.Grib.Raw
 
 
 main :: IO ()

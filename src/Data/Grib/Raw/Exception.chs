@@ -25,8 +25,8 @@ module Data.Grib.Raw.Exception
        , ErrorCode(..)
        ) where
 
-import Control.Exception
-import Data.Typeable
+import Control.Exception ( Exception )
+import Data.Typeable     ( Typeable )
 
 
 #include <grib_api.h>

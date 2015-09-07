@@ -30,11 +30,13 @@ module Data.Grib.Raw.Marshal
        , getArray
        ) where
 
-import Control.Exception (throw, throwIO)
-import Control.Monad     ((>=>))
-import Data.List         (intercalate)
-import Foreign
-import Foreign.C
+import Control.Exception ( throw, throwIO )
+import Control.Monad     ( (>=>) )
+import Data.List         ( intercalate )
+import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.), bit
+                         , clearBit, maybeWith, newForeignPtr, nullPtr, peek
+                         , peekArray, with, withArrayLen )
+import Foreign.C         ( CInt, CString, withCString )
 
 import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Types
@@ -48,11 +50,12 @@ checkStatusPtr :: Ptr CInt -> IO ()
 checkStatusPtr = peek >=> checkStatus
 
 fromFlagList :: (Enum a, Integral b) => [a] -> b
-fromFlagList = fromIntegral . foldr ((.|.) . fromEnum) zeroBits
+fromFlagList = fromIntegral . foldr ((.|.) . fromEnum) zeroBits'
+  -- Data.Bits.zeroBits is only available since base 4.7.0.0.
+  where zeroBits' = clearBit (bit 0) 0
 
 maybeWithCString :: Maybe String -> (CString -> IO a) -> IO a
-maybeWithCString (Just s) f = withCString s f
-maybeWithCString Nothing  f = f nullPtr
+maybeWithCString = maybeWith withCString
 
 peekIntegral :: (Integral a, Storable a, Num b) => Ptr a -> IO b
 peekIntegral = fmap fromIntegral . peek
@@ -86,7 +89,7 @@ withRealArrayLen xs f =
 checkForeignPtr :: (ForeignPtr a -> a) -> FinalizerPtr a -> Ptr a -> IO a
 checkForeignPtr makeA finalizer p
   | p == nullPtr = throw NullPtrReturned
-  | otherwise    = makeA <$> newForeignPtr finalizer p
+  | otherwise    = fmap makeA $ newForeignPtr finalizer p
 
 getArray :: (Storable a, Integral b, Storable b)
          => (CString -> Ptr a -> Ptr b -> IO CInt)
@@ -94,4 +97,4 @@ getArray :: (Storable a, Integral b, Storable b)
 getArray cCall key xs n =
   withCString key $ \key' -> with (fromIntegral n) $ \n' -> do
     cCall key' xs n' >>= checkStatus
-    fromIntegral <$> peek n' >>= flip peekArray xs
+    fmap fromIntegral (peek n') >>= flip peekArray xs

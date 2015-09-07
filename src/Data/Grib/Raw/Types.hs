@@ -16,8 +16,8 @@ module Data.Grib.Raw.Types
        , Message
        ) where
 
-import Foreign
-import Foreign.C
+import Foreign   ( Ptr )
+import Foreign.C ( CUChar )
 
 
 -- |A pointer to a number of bytes in memory.

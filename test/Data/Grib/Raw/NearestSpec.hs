@@ -10,7 +10,7 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Nearest.
 -}
 
-module Data.Grib.Raw.NearestSpec (main, spec) where
+module Data.Grib.Raw.NearestSpec ( main, spec ) where
 
 import Test.Hspec
 import Data.Grib.Raw

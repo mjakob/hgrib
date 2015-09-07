@@ -10,13 +10,12 @@ Portability : portable
 Unit and regression tests for Data.Grib.Raw.Value.
 -}
 
-module Data.Grib.Raw.ValueSpec (main, spec) where
+module Data.Grib.Raw.ValueSpec ( main, spec ) where
 
-import Foreign
+import Foreign ( allocaArray, allocaBytes, nullPtr )
 
 import Test.Hspec
 import Data.Grib.Raw
-import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Test
 
 
@@ -276,7 +275,6 @@ spec = do
           `shouldThrow` isGribException GribNotFound
 
   describe "gribCopyNamespace" $
-    it "should fail with GribNotImplemented" $
+    it "should succeed to copy namespace ls to itself" $
       withRegular1 $ \h ->
-        gribCopyNamespace h Nothing h
-          `shouldThrow` isGribException GribNotImplemented
+        gribCopyNamespace h (Just "ls") h

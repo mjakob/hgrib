@@ -16,6 +16,7 @@ great extent.
 module Data.Grib.Raw
        ( module Data.Grib.Raw.CFile
        , module Data.Grib.Raw.Context
+       , module Data.Grib.Raw.Exception
        , module Data.Grib.Raw.Handle
        , module Data.Grib.Raw.Index
        , module Data.Grib.Raw.Iterator
@@ -27,7 +28,8 @@ module Data.Grib.Raw
 
 import Data.Grib.Raw.CFile
 import Data.Grib.Raw.Context
-import Data.Grib.Raw.Handle       hiding (withGribHandle)
+import Data.Grib.Raw.Exception
+import Data.Grib.Raw.Handle       hiding (withGribHandle, withGribMultiHandle)
 import Data.Grib.Raw.Index        hiding (withGribIndex)
 import Data.Grib.Raw.Iterator
 import Data.Grib.Raw.KeysIterator

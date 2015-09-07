@@ -26,12 +26,12 @@ module Data.Grib.Raw.Iterator
        , withGribIterator
        ) where
 
-import Control.Exception (bracket)
-import Foreign
-import Foreign.C
+import Control.Exception ( bracket )
+import Foreign           ( alloca )
 
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
+
 
 #include <grib_api.h>
 
@@ -57,7 +57,7 @@ import Data.Grib.Raw.Marshal
 -- 'gribIteratorDelete'.  However, due to the reason given in that
 -- function, 'withGribIterator' should be preferred over this
 -- function.
-{#fun grib_iterator_new as ^ {
+{#fun unsafe grib_iterator_new as ^ {
               `GribHandle'
       -- ^the handle from which the iterator will be created
     ,         `Int'
@@ -75,7 +75,7 @@ import Data.Grib.Raw.Marshal
 -- This function returns a tuple @(status, latitude, longitude,
 -- value)@, where @status@ is @True@ if successful and @False@ if no
 -- more data is available.
-{#fun grib_iterator_next as ^ {
+{#fun unsafe grib_iterator_next as ^ {
               `GribIterator'
     , alloca- `Double'       peekReal*
     , alloca- `Double'       peekReal*
@@ -86,7 +86,7 @@ import Data.Grib.Raw.Marshal
 --                            double* value);
 --
 -- |Like 'gribIteratorNext', but return the previous value instead.
-{#fun grib_iterator_previous as ^ {
+{#fun unsafe grib_iterator_previous as ^ {
               `GribIterator'
     , alloca- `Double'       peekReal*
     , alloca- `Double'       peekReal*
@@ -96,12 +96,14 @@ import Data.Grib.Raw.Marshal
 -- int grib_iterator_has_next(grib_iterator *i);
 --
 -- |Test procedure for values in an iterator.
-{#fun grib_iterator_has_next as ^ { `GribIterator' } -> `Bool' #}
+{#fun unsafe grib_iterator_has_next as ^ { `GribIterator' } -> `Bool' #}
 
 -- int grib_iterator_reset(grib_iterator *i);
 --
 -- |Reset the iterator.
-{#fun grib_iterator_reset as ^ { `GribIterator' } -> `()' checkStatus*- #}
+{#fun unsafe grib_iterator_reset as ^ {
+      `GribIterator'
+    } -> `()' checkStatus*- #}
 
 -- int grib_iterator_delete(grib_iterator *i);
 --
@@ -111,7 +113,9 @@ import Data.Grib.Raw.Marshal
 -- collected by the time this function is called, the behavior is
 -- undefined.  Because of this, 'withGribIterator' should be preferred
 -- over directly using 'gribIteratorNew' and this function.
-{#fun grib_iterator_delete as ^ { `GribIterator' } -> `()' checkStatus*- #}
+{#fun unsafe grib_iterator_delete as ^ {
+      `GribIterator'
+    } -> `()' checkStatus*- #}
 
 -- |Safely create, use and delete a 'GribIterator'.
 --
