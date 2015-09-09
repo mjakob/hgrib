@@ -28,6 +28,7 @@ module Data.Grib.Raw.Marshal
 
        , checkForeignPtr
        , getArray
+       , pack5
        ) where
 
 import Control.Exception ( throw, throwIO )
@@ -98,3 +99,6 @@ getArray cCall key xs n =
   withCString key $ \key' -> with (fromIntegral n) $ \n' -> do
     cCall key' xs n' >>= checkStatus
     fmap fromIntegral (peek n') >>= flip peekArray xs
+
+pack5 :: a -> b -> c -> d -> e -> (a, b, c, d, e)
+pack5 a b c d e = (a, b, c, d, e)
