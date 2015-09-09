@@ -86,11 +86,12 @@ spec = do
           len' `shouldBe` 0
     in do
       context "in multi mode" $ after_ (gribMultiSupportOff ctx) $
-        it "should return a message of zero length if given a single message" $
-           gribMultiSupportOn ctx >> checkMultiMessageLength
+        it "should return a message of zero length if given one message" $ do
+           gribMultiSupportOn ctx
+           checkMultiMessageLength
 
       context "not in multi mode" $
-        it "should return a message of zero length if given a single message"
+        it "should return a message of zero length if given one message"
            checkMultiMessageLength
 
   describe "gribMultiHandleAppend" $

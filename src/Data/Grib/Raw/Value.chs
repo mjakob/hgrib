@@ -378,8 +378,9 @@ gribSetString h key msg =
   withGribHandle h                 $ \h'   ->
   withCString key                  $ \key' ->
   withCString msg                  $ \msg' ->
-  with (fromIntegral $ length msg) $ \n    ->
-    cCall h' key' msg' n >>= checkStatus >> fmap fromIntegral (peek n)
+  with (fromIntegral $ length msg) $ \n    -> do
+    cCall h' key' msg' n >>= checkStatus
+    fmap fromIntegral $ peek n
   where cCall = {#call unsafe grib_set_string #}
 
 -- int grib_set_bytes(grib_handle* h, const char* key,
