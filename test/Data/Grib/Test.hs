@@ -11,12 +11,26 @@ Utilities for the unit tests of HGrib's high-level interface.
 -}
 
 module Data.Grib.Test
-       ( notAGribPath
+       ( gShouldBe
+       , gShouldReturn
+       , notAGribPath
        , regular1Path
        , regular2Path
        , testUuidPath
        ) where
 
+import Test.Hspec ( shouldBe )
+
+import Data.Grib
+
+
+type GExpectation = GribIO ()
+
+gShouldBe :: (Show a, Eq a) => a -> a -> GExpectation
+x `gShouldBe` y = liftIO $ x `shouldBe` y
+
+gShouldReturn :: (Show a, Eq a) => GribIO a -> a -> GExpectation
+m `gShouldReturn` r = m >>= (`gShouldBe` r)
 
 notAGribPath :: FilePath
 notAGribPath = "test/stage/not_a_grib.txt"
