@@ -1,45 +1,35 @@
-import Control.Exception (assert)
-import Data.Grib.Raw
-import Foreign           (allocaArray, allocaBytes)
-import Text.Printf       (printf)
+import Control.Exception ( assert )
+import Data.Grib
+import Text.Printf       ( printf )
 
-
-filename :: FilePath
-filename = "test/stage/regular_latlon_surface.grib1"
-
-assertIO :: Bool -> IO ()
-assertIO = flip assert $ return ()
 
 main :: IO ()
-main = do
-  h <- withBinaryCFile filename ReadMode $
-         gribHandleNewFromFile defaultGribContext
+main = let filename = "test/stage/regular_latlon_surface.grib1" in
+  runGribIO_ filename $ do
+    setString "file" filename
 
-  gribSetString h "file" filename
+    getLong "Ni" >>= liftIO . printf "numberOfPointsAlongAParallel=%d\n"
+    getLong "Nj" >>= liftIO . printf "numberOfPointsAlongAMeridian=%d\n"
 
-  gribGetLong h "Ni" >>= printf "numberOfPointsAlongAParallel=%d\n"
-  gribGetLong h "Nj" >>= printf "numberOfPointsAlongAMeridian=%d\n"
+    getDouble "yFirst" >>=
+      liftIO . printf "latitudeOfFirstGridPointInDegrees=%g\n"
+    getDouble "xFirst" >>=
+      liftIO . printf "longitudeOfFirstGridPointInDegrees=%g\n"
+    getDouble "yLast"  >>=
+      liftIO . printf "latitudeOfLastGridPointInDegrees=%g\n"
+    getDouble "xLast"  >>=
+      liftIO . printf "longitudeOfLastGridPointInDegrees=%g\n"
+    getDouble "DyInDegrees" >>=
+      liftIO . printf "jDirectionIncrementInDegrees=%g\n"
+    getDouble "DxInDegrees" >>=
+      liftIO . printf "iDirectionIncrementInDegrees=%g\n"
 
-  gribGetDouble h "yFirst" >>= printf "latitudeOfFirstGridPointInDegrees=%g\n"
-  gribGetDouble h "xFirst" >>= printf "longitudeOfFirstGridPointInDegrees=%g\n"
-  gribGetDouble h "yLast"  >>= printf "latitudeOfLastGridPointInDegrees=%g\n"
-  gribGetDouble h "xLast"  >>= printf "longitudeOfLastGridPointInDegrees=%g\n"
-  gribGetDouble h "DyInDegrees" >>= printf "jDirectionIncrementInDegrees=%g\n"
-  gribGetDouble h "DxInDegrees" >>= printf "iDirectionIncrementInDegrees=%g\n"
+    getString "packingType" >>= liftIO . printf "packingType=%s\n"
 
-  len <- gribGetLength h "packingType"
-  allocaBytes len $ \bufr -> do
-    packingType <- gribGetString h "packingType" bufr len
-    printf "packingType=%s (%d)\n" packingType (length packingType + 1)
+    values <- getValues
+    let numValues = length values
+        average   = sum values / fromIntegral numValues
+    liftIO $ printf "There are %d values, average is %g\n" numValues average
 
-  size <- gribGetSize h "values"
-  allocaArray size $ \array -> do
-    values <- gribGetDoubleArray h "values" array size
-    let average = sum values / (fromIntegral . length $ values)
-    printf "There are %d values, average is %g\n" size average
-
-  len' <- gribGetLength h "file"
-  assertIO $ len' == 1 + length filename
-  allocaBytes len' $ \bufr' -> do
-    file <- gribGetString h "file" bufr' len'
-    assertIO $ file == filename
+    filename' <- getString "file"
+    liftIO $ assert (filename' == filename) (return ())
