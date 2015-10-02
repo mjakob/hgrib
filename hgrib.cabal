@@ -74,6 +74,7 @@ test-suite tests
       Data.Grib.Raw.NearestSpec
       Data.Grib.Raw.Test
       Data.Grib.Raw.ValueSpec
+      Data.Grib.Test
   build-depends:
       base      >= 4.5 && < 4.9
     , directory >= 1.1 && < 1.3

@@ -27,6 +27,7 @@ import System.IO.Error   ( isDoesNotExistError )
 import Test.Hspec        ( SpecWith, expectationFailure )
 
 import Data.Grib.Raw
+import Data.Grib.Test    ( regular1Path, regular2Path )
 
 
 skipIfGribApiVersion :: (Int -> Bool) -> SpecWith a -> SpecWith a
@@ -44,12 +45,6 @@ withGribFile name g = withBinaryCFile name ReadMode $
   case h of
    Just h' -> g h'
    Nothing -> expectationFailure $ "no GRIB message found in '" ++ name ++ "'"
-
-regular1Path :: FilePath
-regular1Path = "test/stage/regular_latlon_surface.grib1"
-
-regular2Path :: FilePath
-regular2Path = "test/stage/regular_latlon_surface.grib2"
 
 withRegular1 :: (GribHandle -> IO ()) -> IO ()
 withRegular1 = withGribFile regular1Path
