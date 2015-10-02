@@ -14,8 +14,10 @@ module Data.Grib.Raw.Test
        ( skipIfGribApiVersion
        , safeRemoveFile
        , withGribFile
+       , notAGribPath
        , regular1Path
        , regular2Path
+       , testUuidPath
        , withRegular1
        , withRegular2
        ) where
@@ -27,7 +29,8 @@ import System.IO.Error   ( isDoesNotExistError )
 import Test.Hspec        ( SpecWith, expectationFailure )
 
 import Data.Grib.Raw
-import Data.Grib.Test    ( regular1Path, regular2Path )
+import Data.Grib.Test    ( notAGribPath, regular1Path, regular2Path
+                         , testUuidPath )
 
 
 skipIfGribApiVersion :: (Int -> Bool) -> SpecWith a -> SpecWith a
