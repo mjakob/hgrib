@@ -44,12 +44,11 @@ library
       Data.Grib.Raw.Index
       Data.Grib.Raw.Iterator
       Data.Grib.Raw.KeysIterator
+      Data.Grib.Raw.Marshal
       Data.Grib.Raw.Nearest
       Data.Grib.Raw.Types
       Data.Grib.Raw.Value
 
-  other-modules:
-      Data.Grib.Raw.Marshal
   build-depends:
       base >= 4.5 && < 4.9
   build-tools:

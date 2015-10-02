@@ -10,6 +10,8 @@ Portability : portable
 Functions to marshal parameters between C and Haskell.
 -}
 
+{-# OPTIONS_HADDOCK hide #-}
+
 module Data.Grib.Raw.Marshal
        ( module Data.Grib.Raw.Types
 
