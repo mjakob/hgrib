@@ -24,7 +24,7 @@ import Control.Exception ( tryJust )
 import Control.Monad     ( (>=>), guard, void )
 import System.Directory  ( removeFile )
 import System.IO.Error   ( isDoesNotExistError )
-import Test.Hspec        ( SpecWith )
+import Test.Hspec        ( SpecWith, expectationFailure )
 
 import Data.Grib.Raw
 
@@ -39,8 +39,11 @@ safeRemoveFile path =
   void $ tryJust (guard . isDoesNotExistError) (removeFile path)
 
 withGribFile :: FilePath -> (GribHandle -> IO ()) -> IO ()
-withGribFile name f = withBinaryCFile name ReadMode $
-                      gribHandleNewFromFile defaultGribContext >=> f
+withGribFile name g = withBinaryCFile name ReadMode $
+  gribHandleNewFromFile defaultGribContext >=> \h ->
+  case h of
+   Just h' -> g h'
+   Nothing -> expectationFailure $ "no GRIB message found in '" ++ name ++ "'"
 
 regular1Path :: FilePath
 regular1Path = "test/stage/regular_latlon_surface.grib1"
