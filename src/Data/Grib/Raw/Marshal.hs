@@ -41,6 +41,10 @@ import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.), bit
                          , peekArray, with, withArrayLen )
 import Foreign.C         ( CInt, CString, withCString )
 
+-- Hack to have Applicative in base < 4.8 but avoid warning in base >= 4.8:
+import Control.Applicative
+import Prelude
+
 import Data.Grib.Raw.Exception
 import Data.Grib.Raw.Types
 
@@ -92,7 +96,7 @@ withRealArrayLen xs f =
 checkForeignPtr :: (ForeignPtr a -> a) -> FinalizerPtr a -> Ptr a -> IO a
 checkForeignPtr makeA finalizer p
   | p == nullPtr = throw NullPtrReturned
-  | otherwise    = fmap makeA $ newForeignPtr finalizer p
+  | otherwise    = makeA <$> newForeignPtr finalizer p
 
 getArray :: (Storable a, Integral b, Storable b)
          => (CString -> Ptr a -> Ptr b -> IO CInt)
