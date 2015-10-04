@@ -45,7 +45,7 @@ import Foreign.C         ( CInt, CString, withCString )
 import Control.Applicative
 import Prelude
 
-import Data.Grib.Raw.Exception
+import Data.Grib.Exception
 import Data.Grib.Raw.Types
 
 

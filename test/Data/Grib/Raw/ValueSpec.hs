@@ -15,6 +15,7 @@ module Data.Grib.Raw.ValueSpec ( main, spec ) where
 import Foreign ( allocaArray, allocaBytes, nullPtr )
 
 import Test.Hspec
+import Data.Grib.Exception
 import Data.Grib.Raw
 import Data.Grib.Raw.Test
 

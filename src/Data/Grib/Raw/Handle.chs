@@ -45,7 +45,7 @@ module Data.Grib.Raw.Handle
        , gribCountInFile
        ) where
 
-import Foreign   ( Ptr, alloca, peek, with )
+import Foreign   ( Ptr, alloca, newForeignPtr, nullPtr, peek, with )
 import Foreign.C ( CSize, withCString )
 
 {#import Data.Grib.Raw.CFile #}
@@ -89,12 +89,17 @@ checkHandle = checkForeignPtr GribHandle gribHandleFinalizer
 -- |Create a handle from a file resource.
 --
 -- The file is read until a message is found. The message is then
--- copied.
+-- copied.  If no more messages are found, @Nothing@ is returned.
 {#fun unsafe grib_handle_new_from_file as ^ {
               `GribContext'
     ,         `CFilePtr'
     , alloca- `CInt'        checkStatusPtr*-
-    } -> `GribHandle' #}
+    } -> `Maybe GribHandle' maybeHandle* #}
+  where maybeHandle :: Ptr GribHandle -> IO (Maybe GribHandle)
+        maybeHandle p
+          | p == nullPtr = return Nothing
+          | otherwise    = fmap (Just . GribHandle) fp
+          where fp = newForeignPtr gribHandleFinalizer p
 
 -- int grib_write_message(grib_handle* h,const char* file,const char* mode);
 --

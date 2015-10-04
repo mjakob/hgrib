@@ -1,5 +1,5 @@
 {- |
-Module      : Data.Grib.Raw.Exception
+Module      : Data.Grib.Raw.Error
 Copyright   : (c) Mattias Jakobsson 2015
 License     : GPL-3
 
@@ -7,26 +7,12 @@ Maintainer  : mjakob422@gmail.com
 Stability   : unstable
 Portability : portable
 
-Exceptions for HGrib.
+Error codes used by GRIB API.
 -}
 
-{-# LANGUAGE DeriveDataTypeable #-}
+{-# OPTIONS_HADDOCK hide #-}
 
-module Data.Grib.Raw.Exception
-       ( -- *GRIB Exceptions
-         GribException(..)
-
-         -- **Predicates
-       , isAnyGribException
-       , isGribException
-       , isNullPtrReturned
-
-         -- **Error codes
-       , ErrorCode(..)
-       ) where
-
-import Control.Exception ( Exception )
-import Data.Typeable     ( Typeable )
+module Data.Grib.Raw.Error ( ErrorCode(..) ) where
 
 
 #include <grib_api.h>
@@ -90,27 +76,3 @@ import Data.Typeable     ( Typeable )
     , GRIB_VALUE_DIFFERENT          as GribValueDifferent
     , GRIB_INVALID_KEY_VALUE        as GribInvalidKeyValue
     } deriving (Eq, Show) #}
-
--- This comment is inserted to help Haddock keep all docs.
-
--- |An exception carrying an 'ErrorCode' or representing a returned
--- null pointer.
-data GribException = GribException ErrorCode
-                   | NullPtrReturned
-                   deriving (Show, Typeable)
-
-instance Exception GribException
-
--- |True for any 'GribException'.
-isAnyGribException :: GribException -> Bool
-isAnyGribException = const True
-
--- |True if a 'GribException' carries the given 'ErrorCode'.
-isGribException :: ErrorCode -> GribException -> Bool
-isGribException code (GribException code') = code' == code
-isGribException _    NullPtrReturned       = False
-
--- |True for 'NullPtrReturned'.
-isNullPtrReturned :: GribException -> Bool
-isNullPtrReturned NullPtrReturned = True
-isNullPtrReturned _               = False
