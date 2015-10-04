@@ -1,7 +1,7 @@
 -- Package description for HGrib.
 
 name:                hgrib
-version:             0.2.1.0
+version:             0.3.0.0
 synopsis:            Unofficial bindings for GRIB API
 description:
     Unofficial bindings to ECMWF's GRIB API library for reading WMO
@@ -20,8 +20,10 @@ cabal-version:       >=1.10
 extra-source-files:
     CHANGELOG.md
     README.md
+    test/stage/not_a_grib.txt
     test/stage/regular_latlon_surface.grib1
     test/stage/regular_latlon_surface.grib2
+    test/stage/test_uuid.grib2
 
 source-repository head
   type:      git
