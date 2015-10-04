@@ -1,7 +1,7 @@
 -- Package description for HGrib.
 
 name:                hgrib
-version:             0.2.1.0
+version:             0.3.0.0
 synopsis:            Unofficial bindings for GRIB API
 description:
     Unofficial bindings to ECMWF's GRIB API library for reading WMO
