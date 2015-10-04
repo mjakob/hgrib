@@ -14,8 +14,10 @@ module Data.Grib.Raw.Test
        ( skipIfGribApiVersion
        , safeRemoveFile
        , withGribFile
+       , notAGribPath
        , regular1Path
        , regular2Path
+       , testUuidPath
        , withRegular1
        , withRegular2
        ) where
@@ -24,9 +26,11 @@ import Control.Exception ( tryJust )
 import Control.Monad     ( (>=>), guard, void )
 import System.Directory  ( removeFile )
 import System.IO.Error   ( isDoesNotExistError )
-import Test.Hspec        ( SpecWith )
+import Test.Hspec        ( SpecWith, expectationFailure )
 
 import Data.Grib.Raw
+import Data.Grib.Test    ( notAGribPath, regular1Path, regular2Path
+                         , testUuidPath )
 
 
 skipIfGribApiVersion :: (Int -> Bool) -> SpecWith a -> SpecWith a
@@ -39,14 +43,11 @@ safeRemoveFile path =
   void $ tryJust (guard . isDoesNotExistError) (removeFile path)
 
 withGribFile :: FilePath -> (GribHandle -> IO ()) -> IO ()
-withGribFile name f = withBinaryCFile name ReadMode $
-                      gribHandleNewFromFile defaultGribContext >=> f
-
-regular1Path :: FilePath
-regular1Path = "test/stage/regular_latlon_surface.grib1"
-
-regular2Path :: FilePath
-regular2Path = "test/stage/regular_latlon_surface.grib2"
+withGribFile name g = withBinaryCFile name ReadMode $
+  gribHandleNewFromFile defaultGribContext >=> \h ->
+  case h of
+   Just h' -> g h'
+   Nothing -> expectationFailure $ "no GRIB message found in '" ++ name ++ "'"
 
 withRegular1 :: (GribHandle -> IO ()) -> IO ()
 withRegular1 = withGribFile regular1Path

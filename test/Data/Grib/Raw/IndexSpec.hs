@@ -16,6 +16,7 @@ import Control.Monad ( void )
 import Foreign       ( alloca )
 
 import Test.Hspec
+import Data.Grib.Exception
 import Data.Grib.Raw
 import Data.Grib.Raw.Test hiding (withRegular1)
 

@@ -1,13 +1,15 @@
 # HGrib
 
-[![Build Status](https://travis-ci.org/mjakob/hgrib.svg?branch=develop)](https://travis-ci.org/mjakob/hgrib)
+[![Build Status](https://travis-ci.org/mjakob/hgrib.svg?branch=master)](https://travis-ci.org/mjakob/hgrib)
 
 Unofficial bindings for [ECMWF][]'s [GRIB API][] library for reading
-[WMO FM-92 GRIB][] edition 1 and edition 2 messages.
+and writing [WMO FM-92 GRIB][] edition 1 and edition 2 messages.
 
-In this version of HGrib, raw bindings for the [documented][GRIB Docs]
-part of GRIB API is available.  Future versions are intended to
-include a higher-level Haskell interface.
+In this version of HGrib, a read-only monadic Haskell interface to
+GRIB API is provided.  Raw bindings for the [documented][GRIB Docs]
+parts of GRIB API are also available.  Future versions are intended to
+expand the higher-level Haskell interface to include, among other
+things, write support.
 
 
 ## Installation
@@ -32,68 +34,62 @@ cabal install hgrib
 
 ## Usage
 
-Right now, only raw bindings for the [documented][GRIB Docs] part of
-GRIB API is available in `Data.Grib.Raw`.  Much of the documentation
-is copied into HGrib's [reference documentation][HGrib Docs] generated
-by [Haddock][].  To be able to work with these bindings, bindings for
-C's `fopen` is provided in `Data.Grib.Raw.CFile` (which is re-exported
-by `Data.Grib.Raw`).  An example of usage is GRIB API's
-[get.c][GRIB Get] example re-written with HGrib's bindings:
+HGrib provides a high-level monadic Haskell interface to GRIB API in
+`Data.Grib`. An example of its usage is GRIB API's [get.c][GRIB Get]
+example re-written with HGrib:
 
 ```haskell
-import Control.Exception (assert)
-import Data.Grib.Raw
-import Foreign           (allocaArray, allocaBytes)
-import Text.Printf       (printf)
-
-
-filename :: FilePath
-filename = "test/stage/regular_latlon_surface.grib1"
-
-assertIO :: Bool -> IO ()
-assertIO = flip assert $ return ()
+import Control.Exception ( assert )
+import Data.Grib
+import Text.Printf       ( printf )
 
 main :: IO ()
-main = do
-  h <- withBinaryCFile filename ReadMode $
-         gribHandleNewFromFile defaultGribContext
+main = let filename = "test/stage/regular_latlon_surface.grib1" in
+  runGribIO_ filename $ do
+    setString "file" filename
 
-  _ <- gribSetString h "file" filename
+    getLong "Ni" >>= liftIO . printf "numberOfPointsAlongAParallel=%d\n"
+    getLong "Nj" >>= liftIO . printf "numberOfPointsAlongAMeridian=%d\n"
 
-  gribGetLong h "Ni" >>= printf "numberOfPointsAlongAParallel=%d\n"
-  gribGetLong h "Nj" >>= printf "numberOfPointsAlongAMeridian=%d\n"
+    getDouble "yFirst" >>=
+      liftIO . printf "latitudeOfFirstGridPointInDegrees=%g\n"
+    getDouble "xFirst" >>=
+      liftIO . printf "longitudeOfFirstGridPointInDegrees=%g\n"
+    getDouble "yLast"  >>=
+      liftIO . printf "latitudeOfLastGridPointInDegrees=%g\n"
+    getDouble "xLast"  >>=
+      liftIO . printf "longitudeOfLastGridPointInDegrees=%g\n"
+    getDouble "DyInDegrees" >>=
+      liftIO . printf "jDirectionIncrementInDegrees=%g\n"
+    getDouble "DxInDegrees" >>=
+      liftIO . printf "iDirectionIncrementInDegrees=%g\n"
 
-  gribGetDouble h "yFirst" >>= printf "latitudeOfFirstGridPointInDegrees=%g\n"
-  gribGetDouble h "xFirst" >>= printf "longitudeOfFirstGridPointInDegrees=%g\n"
-  gribGetDouble h "yLast"  >>= printf "latitudeOfLastGridPointInDegrees=%g\n"
-  gribGetDouble h "xLast"  >>= printf "longitudeOfLastGridPointInDegrees=%g\n"
-  gribGetDouble h "DyInDegrees" >>= printf "jDirectionIncrementInDegrees=%g\n"
-  gribGetDouble h "DxInDegrees" >>= printf "iDirectionIncrementInDegrees=%g\n"
+    getString "packingType" >>= liftIO . printf "packingType=%s\n"
 
-  len <- gribGetLength h "packingType"
-  allocaBytes len $ \bufr -> do
-    packingType <- gribGetString h "packingType" bufr len
-    printf "packingType=%s (%d)\n" packingType (length packingType + 1)
+    values <- getValues
+    let numValues = length values
+        average   = sum values / fromIntegral numValues
+    liftIO $ printf "There are %d values, average is %g\n" numValues average
 
-  size <- gribGetSize h "values"
-  allocaArray size $ \array -> do
-    values <- gribGetDoubleArray h "values" array size
-    let average = sum values / (fromIntegral . length $ values)
-    printf "There are %d values, average is %g\n" size average
-
-  len' <- gribGetLength h "file"
-  assertIO $ len' == 1 + length filename
-  allocaBytes len' $ \bufr' -> do
-    file <- gribGetString h "file" bufr' len'
-    assertIO $ file == filename
+    filename' <- getString "file"
+    liftIO $ assert (filename' == filename) (return ())
 ```
+
+Raw bindings for the [documented][GRIB Docs] part of GRIB API is also
+available in `Data.Grib.Raw`.  To be able to work with these bindings,
+bindings for C's `fopen` is provided in `Data.Grib.Raw.CFile` (which
+is re-exported by `Data.Grib.Raw`).
+
+For more information, see HGrib's
+[reference documentation][HGrib Docs] generated by [Haddock][].
 
 
 ## Contributing
 
-Issues and pull requests are most welcome!  In particular, let me know
-if there is any undocumented part of GRIB API that you would like to
-have included.
+Issues, feature and pull requests are most welcome!  In particular,
+please give suggestions on what you would like to see in the
+higher-level interface and let me know if there is any undocumented
+part of GRIB API that you would like to have included.
 
 
 ## Licenses

@@ -1,5 +1,27 @@
 # HGrib Change Log
 
+## 0.3.0.0
+
+* Added a `GribIO` monad in `Data.Grib`, which is a higher-level
+  abstraction for reading GRIB files over the raw bindings in
+  `Data.Grib.Raw`.
+
+* Moved `Data.Grib.Raw.Exception` up to `Data.Grib`.
+
+* `Data.Grib.Raw` no longer re-exports the `Exception` module
+  mentioned above.
+
+* Made `gribHandleNewFromFile` return a `Maybe GribHandle` instead of
+  a plain `GribHandle`.  `Nothing` is returned if no more messages
+  could be read from the given stream.
+
+* Re-organized the test utility modules.
+
+* Moved `Data.Grib.Raw.Marshal` from other to exposed modules, but it
+  should still be considered an internal module and it is not included
+  in the documentation.
+
+
 ## 0.2.0.0
 
 * Extended the compatible version range of GRIB API and the Haskell

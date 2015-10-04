@@ -12,10 +12,12 @@ Unit and regression tests for Data.Grib.Raw.Handle.
 
 module Data.Grib.Raw.HandleSpec ( main, spec ) where
 
-import Control.Monad ( void )
+import Control.Monad ( (>=>), void )
+import Data.Maybe    ( isJust )
 import Foreign       ( allocaBytes, nullPtr )
 
 import Test.Hspec
+import Data.Grib.Exception
 import Data.Grib.Raw
 import Data.Grib.Raw.Test
 
@@ -45,8 +47,8 @@ spec = do
       it "should write a message to file" $
         withRegular1 $ \h -> do
           gribWriteMessage h gribPath "wb" `shouldReturn` ()
-          withBinaryCFile gribPath ReadMode $ \f ->
-            void $ gribHandleNewFromFile ctx f
+          withBinaryCFile gribPath ReadMode $
+            gribHandleNewFromFile ctx >=> (`shouldSatisfy` isJust)
 
   describe "gribGetMessage" $
     it "should return a message of length 1100" $
@@ -86,11 +88,12 @@ spec = do
           len' `shouldBe` 0
     in do
       context "in multi mode" $ after_ (gribMultiSupportOff ctx) $
-        it "should return a message of zero length if given a single message" $
-           gribMultiSupportOn ctx >> checkMultiMessageLength
+        it "should return a message of zero length if given one message" $ do
+           gribMultiSupportOn ctx
+           checkMultiMessageLength
 
       context "not in multi mode" $
-        it "should return a message of zero length if given a single message"
+        it "should return a message of zero length if given one message"
            checkMultiMessageLength
 
   describe "gribMultiHandleAppend" $

@@ -35,7 +35,7 @@ import Control.Exception ( bracket, throw )
 import Foreign           ( nullPtr )
 import Foreign.C         ( peekCString )
 
-import Data.Grib.Raw.Exception
+import Data.Grib.Exception
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
 

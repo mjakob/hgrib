@@ -10,6 +10,8 @@ Portability : portable
 Functions to marshal parameters between C and Haskell.
 -}
 
+{-# OPTIONS_HADDOCK hide #-}
+
 module Data.Grib.Raw.Marshal
        ( module Data.Grib.Raw.Types
 
@@ -28,6 +30,7 @@ module Data.Grib.Raw.Marshal
 
        , checkForeignPtr
        , getArray
+       , pack5
        ) where
 
 import Control.Exception ( throw, throwIO )
@@ -38,7 +41,11 @@ import Foreign           ( FinalizerPtr, ForeignPtr, Ptr, Storable, (.|.), bit
                          , peekArray, with, withArrayLen )
 import Foreign.C         ( CInt, CString, withCString )
 
-import Data.Grib.Raw.Exception
+-- Hack to have Applicative in base < 4.8 but avoid warning in base >= 4.8:
+import Control.Applicative
+import Prelude
+
+import Data.Grib.Exception
 import Data.Grib.Raw.Types
 
 
@@ -89,7 +96,7 @@ withRealArrayLen xs f =
 checkForeignPtr :: (ForeignPtr a -> a) -> FinalizerPtr a -> Ptr a -> IO a
 checkForeignPtr makeA finalizer p
   | p == nullPtr = throw NullPtrReturned
-  | otherwise    = fmap makeA $ newForeignPtr finalizer p
+  | otherwise    = makeA <$> newForeignPtr finalizer p
 
 getArray :: (Storable a, Integral b, Storable b)
          => (CString -> Ptr a -> Ptr b -> IO CInt)
@@ -98,3 +105,6 @@ getArray cCall key xs n =
   withCString key $ \key' -> with (fromIntegral n) $ \n' -> do
     cCall key' xs n' >>= checkStatus
     fmap fromIntegral (peek n') >>= flip peekArray xs
+
+pack5 :: a -> b -> c -> d -> e -> (a, b, c, d, e)
+pack5 a b c d e = (a, b, c, d, e)

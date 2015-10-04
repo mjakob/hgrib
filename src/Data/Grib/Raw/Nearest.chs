@@ -27,10 +27,14 @@ module Data.Grib.Raw.Nearest
        , GribNearestFlag(..)
        ) where
 
-import Control.Exception (bracket)
+import Control.Exception ( bracket )
 import Foreign           ( Ptr, Storable, alloca, allocaArray, fromBool
-                         , peekArray, with, withArray )
+                         , peekArray, with, withArray, withMany )
 import Foreign.C         ( CSize )
+
+-- Hack to have Applicative in base < 4.8 but avoid warning in base >= 4.8:
+import Control.Applicative
+import Prelude
 
 {#import Data.Grib.Raw.Handle #}
 import Data.Grib.Raw.Marshal
@@ -139,24 +143,20 @@ gribNearestFindMultiple :: GribHandle
                         -- @(latitudes, longitudes, values, distances,
                         -- indices)@
 gribNearestFindMultiple h lsm ilats ilons =
-  withGribHandle h $ \h' ->
-  let lsm' = fromBool lsm in
-  withArray (map realToFrac ilats) $ \ilats' ->
-  withArray (map realToFrac ilons) $ \ilons' ->
-  let n  = min (length ilats) (length ilons)
-      n' = fromIntegral n in
-  allocaArray n $ \olats ->
-  allocaArray n $ \olons ->
-  allocaArray n $ \vals ->
-  allocaArray n $ \dists ->
-  allocaArray n $ \is -> do
+  let lsm' = fromBool lsm
+      n    = min (length ilats) (length ilons)
+      n'   = fromIntegral n in
+  withGribHandle h                     $ \h'                          ->
+  withArray (map realToFrac ilats)     $ \ilats'                      ->
+  withArray (map realToFrac ilons)     $ \ilons'                      ->
+  withMany allocaArray (replicate 4 n) $ \[olats, olons, vals, dists] ->
+  allocaArray n                        $ \is                          -> do
     cCall h' lsm' ilats' ilons' n' olats olons vals dists is >>= checkStatus
-    olats' <- fmap (map realToFrac)   (peekArray n olats)
-    olons' <- fmap (map realToFrac)   (peekArray n olons)
-    vals'  <- fmap (map realToFrac)   (peekArray n vals)
-    dists' <- fmap (map realToFrac)   (peekArray n dists)
-    is'    <- fmap (map fromIntegral) (peekArray n is)
-    return (olats', olons', vals', dists', is')
+    pack5 <$> fmap (map realToFrac)   (peekArray n olats)
+          <*> fmap (map realToFrac)   (peekArray n olons)
+          <*> fmap (map realToFrac)   (peekArray n vals)
+          <*> fmap (map realToFrac)   (peekArray n dists)
+          <*> fmap (map fromIntegral) (peekArray n is)
   where cCall = {#call unsafe grib_nearest_find_multiple #}
 
 -- |Safely create, use and delete a 'GribNearest'.
