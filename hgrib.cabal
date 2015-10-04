@@ -20,8 +20,10 @@ cabal-version:       >=1.10
 extra-source-files:
     CHANGELOG.md
     README.md
+    test/stage/not_a_grib.txt
     test/stage/regular_latlon_surface.grib1
     test/stage/regular_latlon_surface.grib2
+    test/stage/test_uuid.grib2
 
 source-repository head
   type:      git
