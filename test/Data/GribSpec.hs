@@ -54,6 +54,18 @@ spec = do
       runGribIO_ testUuidPath (liftIO $ throwIO NullPtrReturned)
         `shouldThrow` isNullPtrReturned
 
+  describe "skipMessage" $
+    it "should make runGribIO not return the result" $ do
+      r <- runGribIO testUuidPath $ do
+        l <- getLong "topLevel"
+        if l == 1 then skipMessage else return l
+      r `shouldBe` [2]
+
+  describe "skipMessageIf" $
+    it "should make runGribIO not return the result if the predicate is true" $
+      runGribIO testUuidPath (skipMessageIf (== 1) $ getLong "topLevel")
+        `shouldReturn` [2]
+
   describe "getDouble" $
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (getDouble "missingKey")
