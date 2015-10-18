@@ -9,6 +9,8 @@ Stability   : unstable
 Portability : portable
 -}
 
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Data.Grib ( -- *The GRIB Monad
                    GribIO
                  , runGribIO
