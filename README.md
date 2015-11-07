@@ -1,6 +1,6 @@
 # HGrib
 
-[![Build Status](https://travis-ci.org/mjakob/hgrib.svg?branch=master)](https://travis-ci.org/mjakob/hgrib)
+[![Build Status](https://travis-ci.org/mjakob/hgrib.svg?branch=develop)](https://travis-ci.org/mjakob/hgrib)
 
 Unofficial bindings for [ECMWF][]'s [GRIB API][] library for reading
 and writing [WMO FM-92 GRIB][] edition 1 and edition 2 messages.
