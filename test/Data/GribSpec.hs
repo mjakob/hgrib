@@ -38,7 +38,7 @@ spec = do
 
     it "should fail with any exception raised by the action" $
       runGribIO testUuidPath (liftIO $ throwIO NullPtrReturned)
-        `shouldThrow` isNullPtrReturned
+      `shouldThrow` isNullPtrReturned
 
   describe "runGribIO_" $ do
     it "should return unit" $
@@ -52,7 +52,7 @@ spec = do
 
     it "should fail with any exception raised by the action" $
       runGribIO_ testUuidPath (liftIO $ throwIO NullPtrReturned)
-        `shouldThrow` isNullPtrReturned
+      `shouldThrow` isNullPtrReturned
 
   describe "skipMessage" $
     it "should make runGribIO not return the result" $ do
@@ -64,49 +64,59 @@ spec = do
   describe "skipMessageIf" $
     it "should make runGribIO not return the result if the predicate is true" $
       runGribIO testUuidPath (skipMessageIf (== 1) $ getLong "topLevel")
-        `shouldReturn` [2]
+      `shouldReturn` [2]
+
+  describe "skipMessageIf_" $ do
+    it "should make runGribIO not return () if the predicate is true" $
+      runGribIO testUuidPath (skipMessageIf_ (== 1) $ getLong "topLevel")
+      `shouldReturn` [()]
+    it "should behave like in the documented example" $ do
+      runGribIO testUuidPath $ do
+        skipMessageIf_ (/= 1) $ getLong "topLevel"
+        fmap sum getValues
+      `shouldReturn` [31595.198486328125]
 
   describe "getDouble" $
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (getDouble "missingKey")
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
   describe "getLong" $
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (getLong "missingKey")
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
   describe "getString" $
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (getString "missingKey")
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
   describe "setDouble" $ do
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (setDouble "missingKey" 0)
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
     it "should fail with GribReadOnly if the key is read-only" $
       runGribIO_ testUuidPath (setDouble "referenceValue" 0)
-        `shouldThrow` isGribException GribReadOnly
+      `shouldThrow` isGribException GribReadOnly
 
   describe "setLong" $ do
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (setLong "missingKey" 0)
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
     it "should fail with GribReadOnly if the key is read-only" $
       runGribIO_ testUuidPath (setLong "getNumberOfValues" 0)
-        `shouldThrow` isGribException GribReadOnly
+      `shouldThrow` isGribException GribReadOnly
 
   describe "setString" $ do
     it "should fail with GribNotFound if the key does not exist" $
       runGribIO_ testUuidPath (setString "missingKey" "value")
-        `shouldThrow` isGribException GribNotFound
+      `shouldThrow` isGribException GribNotFound
 
     it "should fail with GribReadOnly if the key is read-only" $
       runGribIO_ testUuidPath (setString "referenceValue" "value")
-        `shouldThrow` isGribException GribReadOnly
+      `shouldThrow` isGribException GribReadOnly
 
   describe "getFilename" $
     it "should return the name of the file being read" $
