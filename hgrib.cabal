@@ -1,7 +1,7 @@
 -- Package description for HGrib.
 
 name:                hgrib
-version:             0.3.0.0
+version:             0.3.1.0
 synopsis:            Unofficial bindings for GRIB API
 description:
     Unofficial bindings to ECMWF's GRIB API library for reading WMO
@@ -29,6 +29,11 @@ source-repository head
   type:      git
   location:  https://github.com/mjakob/hgrib.git
   branch:    develop
+
+source-repository this
+  type:      git
+  location:  https://github.com/mjakob/hgrib.git
+  tag:       0.3.1.0
 
 library
   default-language:  Haskell2010

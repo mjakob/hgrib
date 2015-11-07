@@ -17,6 +17,7 @@ module Data.Grib ( -- *The GRIB Monad
                  , runGribIO_
                  , skipMessage
                  , skipMessageIf
+                 , skipMessageIf_
 
                    -- **Get values
                    --
@@ -104,6 +105,20 @@ skipMessageIf :: (a -> Bool)  -- ^a predicate that will be given the
               -> GribIO a     -- ^an action to perform
               -> GribIO a
 skipMessageIf p m = do { x <- m; when (p x) skipMessage; return x }
+
+-- |Like 'skipMessageIf', but discard the result of the action.
+--
+-- ==== __Examples__
+--
+-- Sum all grid points of the first vertical level in a GRIB message:
+--
+-- > runGribIO "test/stage/test_uuid.grib2" $ do
+-- >   skipMessageIf_ (/= 1) $ getLong "topLevel"
+-- >   fmap sum getValues
+skipMessageIf_ :: (a -> Bool)
+               -> GribIO a
+               -> GribIO ()
+skipMessageIf_ p m = do { x <- m; when (p x) skipMessage }
 
 -- A try that catches the SkipMessage exception.
 trySkipMessage :: IO a -> IO (Either SkipMessage a)
