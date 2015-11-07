@@ -2,8 +2,9 @@
 
 ## 0.3.1.0
 
-* Added `skipMessage` and `skipMessageIf` to `Data.Grib`, two
-  functions to easily skip unwanted GRIB messages in a file.
+* Added `skipMessage`, `skipMessageIf`, and `skipMessageIf_` to
+  `Data.Grib`, three functions to easily skip unwanted GRIB messages
+  in a file.
 
 
 ## 0.3.0.0
