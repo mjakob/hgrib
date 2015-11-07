@@ -9,11 +9,15 @@ Stability   : unstable
 Portability : portable
 -}
 
+{-# LANGUAGE DeriveDataTypeable #-}
+
 module Data.Grib ( -- *The GRIB Monad
                    GribIO
                  , runGribIO
                  , runGribIO_
-                 , GribEnv
+                 , skipMessage
+                 , skipMessageIf
+                 , skipMessageIf_
 
                    -- **Get values
                    --
@@ -45,11 +49,17 @@ module Data.Grib ( -- *The GRIB Monad
                  , getIndex
                  , getHandle
                  , liftIO
+
+                   -- **Auxiliary types
+                 , GribEnv
+                 , SkipMessage
                  ) where
 
-import Control.Monad              ( void )
+import Control.Exception          ( Exception, throwIO, try )
+import Control.Monad              ( void, when )
 import Control.Monad.IO.Class     ( liftIO )
 import Control.Monad.Trans.Reader ( ReaderT, ask, runReaderT )
+import Data.Typeable              ( Typeable )
 import Foreign                    ( allocaArray, allocaBytes )
 
 -- Hack to have Applicative in base < 4.8 but avoid warning in base >= 4.8:
@@ -77,6 +87,43 @@ data GribEnv = GribEnv
 envs :: FilePath -> IO [GribEnv]
 envs path = fmap (zipWith3 GribEnv (repeat path) [0..]) (handles path)
 
+-- |If this exception is raised in 'GribIO', the message will be
+-- discarded.  Normally, you simply call 'skipMessage' instead of
+-- throwing this exception manually.
+data SkipMessage = SkipMessage deriving (Show, Typeable)
+instance Exception SkipMessage
+
+-- |Skip the current GRIB message.  No result will be put in the
+-- output list of 'runGribIO' for this message.
+skipMessage :: GribIO a
+skipMessage = liftIO . throwIO $ SkipMessage
+
+-- |Skip the current GRIB message if the predicate is true.  No result
+-- will be put in the output list of 'runGribIO' in this case.
+skipMessageIf :: (a -> Bool)  -- ^a predicate that will be given the
+                              -- result of the action
+              -> GribIO a     -- ^an action to perform
+              -> GribIO a
+skipMessageIf p m = do { x <- m; when (p x) skipMessage; return x }
+
+-- |Like 'skipMessageIf', but discard the result of the action.
+--
+-- ==== __Examples__
+--
+-- Sum all grid points of the first vertical level in a GRIB message:
+--
+-- > runGribIO "test/stage/test_uuid.grib2" $ do
+-- >   skipMessageIf_ (/= 1) $ getLong "topLevel"
+-- >   fmap sum getValues
+skipMessageIf_ :: (a -> Bool)
+               -> GribIO a
+               -> GribIO ()
+skipMessageIf_ p m = do { x <- m; when (p x) skipMessage }
+
+-- A try that catches the SkipMessage exception.
+trySkipMessage :: IO a -> IO (Either SkipMessage a)
+trySkipMessage = try
+
 -- |The 'GribIO' monad is a 'ReaderT' monad transformer over the
 -- 'IO' monad with a 'GribEnv' environment.
 type GribIO = ReaderT GribEnv IO
@@ -95,7 +142,9 @@ type GribIO = ReaderT GribEnv IO
 runGribIO :: FilePath  -- ^a path to a GRIB file
           -> GribIO a  -- ^an action to take on each GRIB message in the file
           -> IO [a]    -- ^the results of the actions
-runGribIO path m = envs path >>= mapM (runReaderT m)
+runGribIO path m = envs path >>= foldr k (return [])
+  where k env res = trySkipMessage (runReaderT m env) >>=
+                    either (const res) (\x -> fmap (x :) res)
 
 -- |Like 'runGribIO', but discard the results.
 runGribIO_ :: FilePath -> GribIO a -> IO ()

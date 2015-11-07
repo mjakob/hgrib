@@ -1,5 +1,12 @@
 # HGrib Change Log
 
+## 0.3.1.0
+
+* Added `skipMessage`, `skipMessageIf`, and `skipMessageIf_` to
+  `Data.Grib`, three functions to easily skip unwanted GRIB messages
+  in a file.
+
+
 ## 0.3.0.0
 
 * Added a `GribIO` monad in `Data.Grib`, which is a higher-level
