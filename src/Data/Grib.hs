@@ -112,9 +112,12 @@ skipMessageIf p m = do { x <- m; when (p x) skipMessage; return x }
 --
 -- Sum all grid points of the first vertical level in a GRIB message:
 --
--- > runGribIO "test/stage/test_uuid.grib2" $ do
--- >   skipMessageIf_ (/= 1) $ getLong "topLevel"
--- >   fmap sum getValues
+-- >>> :{
+--   runGribIO "test/stage/test_uuid.grib2" $ do
+--     skipMessageIf_ (/= 1) $ getLong "topLevel"
+--     fmap sum getValues
+-- :}
+-- [31595.198486328125]
 skipMessageIf_ :: (a -> Bool)
                -> GribIO a
                -> GribIO ()

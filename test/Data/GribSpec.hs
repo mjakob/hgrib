@@ -66,15 +66,10 @@ spec = do
       runGribIO testUuidPath (skipMessageIf (== 1) $ getLong "topLevel")
       `shouldReturn` [2]
 
-  describe "skipMessageIf_" $ do
+  describe "skipMessageIf_" $
     it "should make runGribIO not return () if the predicate is true" $
       runGribIO testUuidPath (skipMessageIf_ (== 1) $ getLong "topLevel")
       `shouldReturn` [()]
-    it "should behave like in the documented example" $ do
-      runGribIO testUuidPath $ do
-        skipMessageIf_ (/= 1) $ getLong "topLevel"
-        fmap sum getValues
-      `shouldReturn` [31595.198486328125]
 
   describe "getDouble" $
     it "should fail with GribNotFound if the key does not exist" $
