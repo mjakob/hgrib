@@ -34,3 +34,5 @@ import Data.Grib.Raw.KeysIterator
 import Data.Grib.Raw.Nearest
 import Data.Grib.Raw.Types
 import Data.Grib.Raw.Value
+
+{-# ANN module "HLint: ignore Use import/export shortcut" #-}
